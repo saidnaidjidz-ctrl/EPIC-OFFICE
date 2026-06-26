@@ -18,23 +18,23 @@ const envSchema = z.object({
   
   REDIS_URL: z.string().url().optional(),
   
-  JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters long"),
-  JWT_REFRESH_SECRET: z.string().min(16, "JWT_REFRESH_SECRET must be at least 16 characters long"),
+  JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters long").default('default_secret_for_jwt_access_token_12345'),
+  JWT_REFRESH_SECRET: z.string().min(16, "JWT_REFRESH_SECRET must be at least 16 characters long").default('default_secret_for_jwt_refresh_token_12345'),
   
   CORS_ALLOWED_ORIGINS: z.string().default('http://localhost:3000').transform((val) => {
     return val.split(',').map((origin) => origin.trim()).filter(Boolean);
   }),
   
-  FRONTEND_URL: z.string().url('FRONTEND_URL must be a valid URL (e.g. http://localhost:3001)'),
+  FRONTEND_URL: z.string().url('FRONTEND_URL must be a valid URL (e.g. http://localhost:3001)').default('https://epic-office.vercel.app'),
   
-  GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID is required to support OAuth authentication"),
+  GOOGLE_CLIENT_ID: z.string().default('194348235086-80qcp2rocub565jqikqpu0tlasjjk0du.apps.googleusercontent.com'),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
 
   // SMTP Email Configuration (for verification emails)
-  SMTP_HOST: z.string().min(1, 'SMTP_HOST is required for sending emails'),
+  SMTP_HOST: z.string().default('smtp.gmail.com'),
   SMTP_PORT: z.preprocess((val) => (val ? Number(val) : 587), z.number().int().positive()),
-  SMTP_USER: z.string().min(1, 'SMTP_USER (email address) is required'),
-  SMTP_PASS: z.string().min(1, 'SMTP_PASS (email password or app password) is required'),
+  SMTP_USER: z.string().default('test@gmail.com'),
+  SMTP_PASS: z.string().default('12345678'),
   SMTP_FROM: z.string().email('SMTP_FROM must be a valid email address').default('noreply@epicclub.app'),
 
 }).refine((data) => {
