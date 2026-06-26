@@ -1,0 +1,10 @@
+.env
+nginx/ssl/*.pem
+nginx/logs/
+*.pem
+*.key
+.DS_Store
+Thumbs.db
+epicclub-backend/node_modules
+epicclub-frontend/node_modules
+epicclub-frontend/.next
