@@ -146,7 +146,13 @@ app.use((err, req, res, next) => {
 const PORT = env.PORT || 3000;
 const startServer = async () => {
   try {
-    await db.testConnection();
+    // Try DB connection but don't crash if it fails at startup
+    try {
+      await db.testConnection();
+    } catch (dbError) {
+      console.warn(`⚠️ Database connection failed at startup: ${dbError.message}`);
+      console.warn('⚠️ Server will start anyway. DB-dependent routes may not work until DB is reachable.');
+    }
 
     const server = app.listen(PORT, () => {
       console.log(`🚀 Epic Club Backend listening on port ${PORT} in ${env.NODE_ENV} mode.`);
