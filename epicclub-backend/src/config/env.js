@@ -9,7 +9,7 @@ const envSchema = z.object({
   PORT: z.preprocess((val) => (val ? Number(val) : 3000), z.number().int().positive()),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   
-  DATABASE_URL: z.string().url().default('postgresql://postgres:21%2F06%2F2006@db.qkxxmwgdpgwakxnfyabj.supabase.co:5432/postgres'),
+  DATABASE_URL: z.string().url().default('postgresql://postgres.qkxxmwgdpgwakxnfyabj:21%2F06%2F2006@aws-0-eu-central-1.pooler.supabase.com:6543/postgres'),
   DB_HOST: z.string().default('localhost'),
   DB_PORT: z.preprocess((val) => (val ? Number(val) : 5432), z.number().int().positive()),
   DB_USER: z.string().default('postgres'),
