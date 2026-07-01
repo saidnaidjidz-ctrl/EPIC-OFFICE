@@ -9,7 +9,7 @@ const envSchema = z.object({
   PORT: z.preprocess((val) => (val ? Number(val) : 3000), z.number().int().positive()),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   
-  DATABASE_URL: z.string().url().default('postgresql://postgres.qkxxmwgdpgwakxnfyabj:21%2F06%2F2006@aws-0-eu-central-1.pooler.supabase.com:6543/postgres'),
+  DATABASE_URL: z.string().url().default('postgresql://postgres.qkxxmwgdpgwakxnfyabj:SaidNaidji2006@aws-1-eu-central-1.pooler.supabase.com:6543/postgres'),
   DB_HOST: z.string().default('localhost'),
   DB_PORT: z.preprocess((val) => (val ? Number(val) : 5432), z.number().int().positive()),
   DB_USER: z.string().default('postgres'),
@@ -21,7 +21,7 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters long").default('default_secret_for_jwt_access_token_12345'),
   JWT_REFRESH_SECRET: z.string().min(16, "JWT_REFRESH_SECRET must be at least 16 characters long").default('default_secret_for_jwt_refresh_token_12345'),
   
-  CORS_ALLOWED_ORIGINS: z.string().default('http://localhost:3000').transform((val) => {
+  CORS_ALLOWED_ORIGINS: z.string().default('http://localhost:3000,https://epic-office.vercel.app').transform((val) => {
     return val.split(',').map((origin) => origin.trim()).filter(Boolean);
   }),
   

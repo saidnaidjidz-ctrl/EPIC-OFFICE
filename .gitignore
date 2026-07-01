@@ -8,3 +8,5 @@ Thumbs.db
 epicclub-backend/node_modules
 epicclub-frontend/node_modules
 epicclub-frontend/.next
+
+.vercel
