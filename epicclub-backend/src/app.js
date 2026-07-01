@@ -31,13 +31,23 @@ app.use(
   cors({
     origin: (origin, callback) => {
       // Allow server-to-server or local script requests (null origin)
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+
       const allowedOrigins = [...env.CORS_ALLOWED_ORIGINS];
       if (env.FRONTEND_URL) {
         allowedOrigins.push(env.FRONTEND_URL);
       }
-      if (!origin || allowedOrigins.includes(origin)) {
+
+      // Regex to match any vercel.app subdomain (e.g., https://*.vercel.app)
+      const vercelRegex = /^https:\/\/.*\.vercel\.app$/;
+
+      if (allowedOrigins.includes(origin) || vercelRegex.test(origin)) {
         callback(null, true);
       } else {
+        console.warn(`[CORS] Origin rejected: ${origin}`);
         callback(new Error(`Blocked by CORS policy: Origin ${origin} not allowed`));
       }
     },
