@@ -3,14 +3,14 @@ import Cookies from 'js-cookie';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 // ─── Axios Instance ───────────────────────────────────────────────────────────
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,          // Always send httpOnly cookies
-  timeout: 15_000,
+  timeout: 60_000,                // 60s to handle Render free-tier cold starts
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',

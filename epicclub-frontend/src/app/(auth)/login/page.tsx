@@ -27,14 +27,9 @@ import {
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import Link from 'next/link';
-import { apiClient } from '@/lib/api';
+import { apiClient, API_BASE_URL } from '@/lib/api';
 import { authActions, useAuthStore } from '@/store/authStore';
 import type { User } from '@/types';
-
-// ─── Constants ────────────────────────────────────────────────────────────────
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -645,6 +640,39 @@ function LoginForm() {
   const [isChecking, setIsChecking] = useState(false);
   const [gisReady, setGisReady] = useState(false);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const [serverWaking, setServerWaking] = useState(false);
+
+  // ── Wake up Render server on page load ──────────────────────────────────
+  useEffect(() => {
+    const wakeServer = async () => {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60_000);
+        const res = await fetch(`${API_BASE_URL.replace('/api', '')}/health`, {
+          signal: controller.signal,
+          mode: 'no-cors',
+        });
+        clearTimeout(timeoutId);
+        setServerWaking(false);
+      } catch {
+        setServerWaking(false);
+      }
+    };
+
+    // Probe the backend – if slow, show waking indicator
+    const timer = setTimeout(() => {
+      setServerWaking(true);
+      wakeServer();
+    }, 300);
+
+    // Quick check first
+    fetch(`${API_BASE_URL.replace('/api', '')}/health`, { mode: 'no-cors' })
+      .then(() => { clearTimeout(timer); setServerWaking(false); })
+      .catch(() => { /* will retry in wakeServer */ });
+
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Stable ref so GIS callback always calls the latest version of the handler
   const handleGoogleSuccessRef = useRef<((idToken: string) => Promise<void>) | null>(null);
@@ -872,6 +900,18 @@ function LoginForm() {
   return (
     <>
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+
+      {/* Server waking banner */}
+      {serverWaking && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full mb-4 px-4 py-3 rounded-xl bg-warning/10 border border-warning/30 flex items-center gap-3 text-xs text-warning"
+        >
+          <span className="w-3 h-3 rounded-full bg-warning animate-pulse flex-shrink-0" />
+          <span>Server is waking up from sleep mode — please wait a moment before signing in…</span>
+        </motion.div>
+      )}
 
       {/* Card — the layout already centers this */}
       <motion.div
