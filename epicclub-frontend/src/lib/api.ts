@@ -126,7 +126,9 @@ api.interceptors.response.use(
         if (typeof window !== 'undefined') {
           const { useAuthStore } = await import('@/store/authStore');
           useAuthStore.getState().logout();
-          window.location.href = '/login?session=expired';
+          if (!originalRequest.url?.includes('/auth/me') && !window.location.pathname.startsWith('/login')) {
+            window.location.href = '/login?session=expired';
+          }
         }
         return Promise.reject(refreshError);
       } finally {

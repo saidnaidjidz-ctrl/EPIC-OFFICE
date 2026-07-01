@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { apiClient } from '@/lib/api';
 import { authActions } from '@/store/authStore';
 import type { ApiResponse, User } from '@/types';
+import Cookies from 'js-cookie';
 
 // ─── QueryClient Factory ──────────────────────────────────────────────────────
 
@@ -57,6 +58,13 @@ export function Providers({ children }: ProvidersProps) {
     setMounted(true);
 
     const restoreSession = async () => {
+      const sessionToken = Cookies.get('epicclub_session');
+      const refreshToken = Cookies.get('epicclub_refresh');
+      if (!sessionToken && !refreshToken) {
+        authActions.onRestoreFailed();
+        return;
+      }
+
       try {
         const response = await apiClient.get<ApiResponse<User>>('/auth/me');
         authActions.onRestore(response.data);
