@@ -5,11 +5,5 @@
       "src": "epicclub-frontend/package.json",
       "use": "@vercel/next"
     }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "epicclub-frontend/$1"
-    }
   ]
 }

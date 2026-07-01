@@ -21,6 +21,6 @@ services:
       - key: GOOGLE_CLIENT_ID
         value: 194348235086-80qcp2rocub565jqikqpu0tlasjjk0du.apps.googleusercontent.com
       - key: CORS_ALLOWED_ORIGINS
-        value: https://epic-office.vercel.app,https://epic-office-git-main-saidnaidjidz-ctrls-projects.vercel.app
+        value: https://epicclub-frontend.vercel.app,https://epicclub-frontend-4otl7nq07-epic-office.vercel.app,http://localhost:3000
       - key: FRONTEND_URL
-        value: https://epic-office.vercel.app
+        value: https://epicclub-frontend.vercel.app

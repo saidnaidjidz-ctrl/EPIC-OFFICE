@@ -21,11 +21,11 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters long").default('default_secret_for_jwt_access_token_12345'),
   JWT_REFRESH_SECRET: z.string().min(16, "JWT_REFRESH_SECRET must be at least 16 characters long").default('default_secret_for_jwt_refresh_token_12345'),
   
-  CORS_ALLOWED_ORIGINS: z.string().default('http://localhost:3000,https://epic-office.vercel.app').transform((val) => {
+  CORS_ALLOWED_ORIGINS: z.string().default('http://localhost:3000,https://epicclub-frontend.vercel.app,https://epicclub-frontend-4otl7nq07-epic-office.vercel.app').transform((val) => {
     return val.split(',').map((origin) => origin.trim()).filter(Boolean);
   }),
   
-  FRONTEND_URL: z.string().url('FRONTEND_URL must be a valid URL (e.g. http://localhost:3001)').default('https://epic-office.vercel.app'),
+  FRONTEND_URL: z.string().url('FRONTEND_URL must be a valid URL (e.g. http://localhost:3001)').default('https://epicclub-frontend.vercel.app'),
   
   GOOGLE_CLIENT_ID: z.string().default('194348235086-80qcp2rocub565jqikqpu0tlasjjk0du.apps.googleusercontent.com'),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
