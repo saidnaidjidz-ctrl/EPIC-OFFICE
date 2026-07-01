@@ -11,14 +11,16 @@ services:
       - key: PORT
         value: 5000
       - key: DATABASE_URL
-        sync: false
+        value: postgresql://postgres.qkxxmwgdpgwakxnfyabj:SaidNaidji2006@aws-1-eu-central-1.pooler.supabase.com:6543/postgres
       - key: REDIS_URL
-        sync: false
+        value: rediss://default:AaSDAAIgcDE0ODFkM2I0MTU0ZGM0ODE3YjIxNzliM2M1NGM2MmIwZA@topical-kiwi-42115.upstash.io:6379
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_REFRESH_SECRET
         generateValue: true
       - key: GOOGLE_CLIENT_ID
-        sync: false
+        value: 194348235086-80qcp2rocub565jqikqpu0tlasjjk0du.apps.googleusercontent.com
       - key: CORS_ALLOWED_ORIGINS
-        sync: false
+        value: https://epic-office.vercel.app,https://epic-office-git-main-saidnaidjidz-ctrls-projects.vercel.app
+      - key: FRONTEND_URL
+        value: https://epic-office.vercel.app
