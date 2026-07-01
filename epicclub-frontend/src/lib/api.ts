@@ -357,6 +357,24 @@ const handleMockRequest = async (method: string, url: string, data?: any): Promi
     };
   }
 
+  // ── Auth Google login ──
+  if (url.includes('/auth/google') && method === 'POST') {
+    return {
+      success: true,
+      tokens: { accessToken: 'mock_token_president', refreshToken: 'mock_refresh' },
+      user: {
+        id: 'mock-president',
+        email: 'president@epicclub.com',
+        name: 'President Demo',
+        role: 'president',
+        status: 'approved',
+        committeeId: 'mock-committee-tech',
+        avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80',
+        createdAt: new Date().toISOString()
+      }
+    };
+  }
+
   // ── Auth credentials login ──
   if (url.includes('/auth/login') && method === 'POST') {
     const { email, password } = data || {};
@@ -379,15 +397,22 @@ const handleMockRequest = async (method: string, url: string, data?: any): Promi
     }
 
     // Default accounts bypass
-    if (email === 'president@epicclub.com' || email === 'leader@epicclub.com' || email === 'member@epicclub.com') {
-      const role = email.split('@')[0] === 'leader' ? 'committee_leader' : email.split('@')[0];
+    if (
+      email === 'president@epicclub.com' ||
+      email === 'leader@epicclub.com' ||
+      email === 'member@epicclub.com' ||
+      (email === 'teamepiclub@gmail.com' && password === 'Epicclub123')
+    ) {
+      const role = email === 'teamepiclub@gmail.com' 
+        ? 'president' 
+        : (email.split('@')[0] === 'leader' ? 'committee_leader' : email.split('@')[0]);
       return {
         success: true,
         tokens: { accessToken: 'mock_token_' + role, refreshToken: 'mock_refresh' },
         user: {
           id: `mock-${role}`,
           email,
-          name: `${role.charAt(0).toUpperCase() + role.slice(1).replace('_', ' ')} Demo`,
+          name: email === 'teamepiclub@gmail.com' ? 'Epic President' : `${role.charAt(0).toUpperCase() + role.slice(1).replace('_', ' ')} Demo`,
           role,
           status: 'approved',
           committeeId: 'mock-committee-tech'
@@ -396,10 +421,8 @@ const handleMockRequest = async (method: string, url: string, data?: any): Promi
     }
 
     throw {
-      response: {
-        status: 401,
-        data: { message: 'Invalid email or password' }
-      }
+      message: 'Invalid email or password',
+      status: 401
     };
   }
 
@@ -410,10 +433,8 @@ const handleMockRequest = async (method: string, url: string, data?: any): Promi
 
     if (users.some((u: any) => u.email === email)) {
       throw {
-        response: {
-          status: 400,
-          data: { message: 'Email address already registered' }
-        }
+        message: 'Email address already registered',
+        status: 400
       };
     }
 
@@ -452,39 +473,72 @@ const handleMockRequest = async (method: string, url: string, data?: any): Promi
     const tasksList = db.getTasks();
     const commList = db.getCommittees();
     const notifs = db.getNotifications();
+    const role = typeof window !== 'undefined'
+      ? (document.cookie.split('; ').find((r: string) => r.startsWith('epicclub_role='))?.split('=')[1] || 'member')
+      : 'member';
 
     const pending = tasksList.filter((t: any) => t.status === 'pending').length;
-    const progress = tasksList.filter((t: any) => t.status === 'in_progress').length;
+    const inProgress = tasksList.filter((t: any) => t.status === 'in_progress').length;
     const done = tasksList.filter((t: any) => t.status === 'completed').length;
     const completionRate = tasksList.length > 0 ? Math.round((done / tasksList.length) * 100) : 0;
 
+    const upcomingMeetings = [{
+      id: 'm-sync',
+      title: 'Epic Club General Sync',
+      description: 'Monthly all-hands meeting',
+      scheduled_at: new Date(Date.now() + 86400000).toISOString(),
+      location: 'Conference Room A',
+      meeting_link: null,
+      committee_id: null,
+      created_by: 'mock-president',
+      attendee_count: 12,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }];
+
+    const recentActivity = [
+      { id: 'act1', user_id: 'mock-president', user_name: 'President Demo', action: 'task_updated', entity_type: 'task', entity_id: 'task-1', changes: { status: 'in_progress' }, created_at: new Date(Date.now() - 300000).toISOString() },
+      { id: 'act2', user_id: 'mock-leader', user_name: 'Leader Demo', action: 'meeting_scheduled', entity_type: 'meeting', entity_id: 'm-sync', changes: null, created_at: new Date(Date.now() - 3600000).toISOString() },
+    ];
+
+    if (role === 'president') {
+      const byCommittee: Record<string, number> = {};
+      commList.forEach((c: any) => { byCommittee[c.name] = c.members?.length || c.stats?.members || 0; });
+      return {
+        success: true,
+        data: {
+          users: { total: 26, pending: 3, approved: 23, by_committee: byCommittee },
+          tasks: { total: tasksList.length, pending, in_progress: inProgress, completed: done, overdue: 1, completion_rate: completionRate },
+          committees: { total: commList.length, most_active: commList[0]?.name || null, least_active: commList[commList.length - 1]?.name || null },
+          meetings: { upcoming_count: 1, this_week: 1 },
+          recent_activity: recentActivity,
+        }
+      };
+    }
+
+    if (role === 'committee_leader') {
+      return {
+        success: true,
+        data: {
+          members: { total: 8, active: 6 },
+          tasks: { total: tasksList.length, pending, in_progress: inProgress, completed: done, overdue: 1, completion_rate: completionRate },
+          upcoming_meetings: upcomingMeetings,
+          member_performance: [
+            { user_id: 'mock-u1', name: 'Sarah Connor', tasks_completed: 5, tasks_total: 8 },
+            { user_id: 'mock-u2', name: 'John Doe', tasks_completed: 3, tasks_total: 5 },
+            { user_id: 'mock-u3', name: 'Alice Kim', tasks_completed: 7, tasks_total: 9 },
+          ],
+        }
+      };
+    }
+
+    // member role
     return {
       success: true,
       data: {
-        stats: {
-          total_members: 26,
-          total_tasks: tasksList.length,
-          completion_rate: completionRate,
-          active_committees: commList.length,
-          pending_tasks: pending,
-          in_progress_tasks: progress,
-          completed_tasks: done
-        },
-        tasks: tasksList.slice(0, 5),
-        my_tasks: tasksList.slice(0, 3),
-        committees_performance: commList.map((c: any) => ({
-          name: c.name,
-          completion: c.stats.completion,
-          color: c.color
-        })),
-        recent_activity: [
-          { id: 'act1', type: 'task', message: 'Task "Budget Proposal" moved to pending', time_ago: '5 minutes ago' },
-          { id: 'act2', type: 'meeting', message: 'Sync scheduled: Code Architecture', time_ago: '1 hour ago' }
-        ],
+        my_tasks: { total: tasksList.slice(0, 3).length, pending, in_progress: inProgress, completed: done, overdue: 0 },
+        upcoming_meetings: upcomingMeetings,
         recent_notifications: notifs.slice(0, 5),
-        upcoming_meetings: [
-          { id: 'm-sync', title: 'Epic Club General Sync', scheduled_at: new Date(Date.now() + 86400000).toISOString(), location: 'Zoom Meeting' }
-        ]
       }
     };
   }

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, Suspense } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
@@ -69,7 +69,7 @@ const mapBackendTaskToFrontend = (task: BackendTask): Task => {
   };
 };
 
-export default function TasksPage() {
+function TasksPageContent() {
   const { user } = useAuthStore();
   const role = user?.role || 'member';
   const queryClient = useQueryClient();
@@ -479,5 +479,29 @@ export default function TasksPage() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+export default function TasksPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col gap-8 animate-fade-in">
+        <div className="flex flex-col gap-2">
+          <div className="skeleton h-9 w-64" />
+          <div className="skeleton h-5 w-96" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="card-glass p-5 flex flex-col gap-4 h-[350px]">
+              <div className="skeleton h-5 w-24" />
+              <div className="skeleton h-16 w-full mt-2" />
+              <div className="skeleton h-8 w-2/3 mt-2" />
+            </div>
+          ))}
+        </div>
+      </div>
+    }>
+      <TasksPageContent />
+    </Suspense>
   );
 }

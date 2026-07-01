@@ -51,12 +51,9 @@ interface ProvidersProps {
 
 export function Providers({ children }: ProvidersProps) {
   const queryClient = getQueryClient();
-  const [mounted, setMounted] = useState(false);
 
   // Hydrate auth state from /auth/me on mount
   useEffect(() => {
-    setMounted(true);
-
     const restoreSession = async () => {
       const sessionToken = Cookies.get('epicclub_session');
       const refreshToken = Cookies.get('epicclub_refresh');
@@ -66,8 +63,44 @@ export function Providers({ children }: ProvidersProps) {
       }
 
       try {
-        const response = await apiClient.get<ApiResponse<User>>('/auth/me');
-        authActions.onRestore(response.data);
+        const response = await apiClient.get<{
+          success: boolean;
+          user: {
+            id: string;
+            email: string;
+            name: string;
+            role: 'president' | 'committee_leader' | 'member';
+            status?: string;
+            committeeId?: string | null;
+            committee_id?: string | null;
+            avatarUrl?: string | null;
+            avatar_url?: string | null;
+            phone?: string | null;
+            bio?: string | null;
+            createdAt?: string;
+            created_at?: string;
+            updated_at?: string;
+          };
+        }>('/auth/me');
+
+        if (response && response.user) {
+          const mappedUser: User = {
+            id: response.user.id,
+            email: response.user.email,
+            name: response.user.name,
+            role: response.user.role,
+            status: (response.user.status as any) || 'approved',
+            committee_id: response.user.committee_id ?? response.user.committeeId ?? null,
+            avatar_url: response.user.avatar_url ?? response.user.avatarUrl ?? null,
+            phone: response.user.phone ?? null,
+            bio: response.user.bio ?? null,
+            created_at: response.user.created_at ?? response.user.createdAt ?? new Date().toISOString(),
+            updated_at: response.user.updated_at ?? new Date().toISOString(),
+          };
+          authActions.onRestore(mappedUser);
+        } else {
+          authActions.onRestoreFailed();
+        }
       } catch {
         authActions.onRestoreFailed();
       }
@@ -78,7 +111,7 @@ export function Providers({ children }: ProvidersProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {mounted ? children : null}
+      {children}
       {process.env.NODE_ENV === 'development' && (
         <ReactQueryDevtools initialIsOpen={false} />
       )}

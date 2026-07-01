@@ -50,8 +50,8 @@ const nextConfig = {
               "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://accounts.google.com", // unsafe-eval needed for Next.js dev, accounts.google.com for Google GSI
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https:",
-              "connect-src 'self' http://localhost:5000 https://api.epicclub.com https://accounts.google.com https://epic-office.onrender.com https://qkxxmwgdpgwakxnfyabj.supabase.co https://*.supabase.co",
+              "img-src 'self' data: blob: https: https://images.unsplash.com",
+              "connect-src 'self' http://localhost:5000 https://api.epicclub.com https://accounts.google.com https://epic-office.onrender.com https://*.onrender.com https://epicclub-backend.onrender.com https://qkxxmwgdpgwakxnfyabj.supabase.co https://*.supabase.co",
               "frame-src 'self' https://accounts.google.com",
               "frame-ancestors 'self'",
               "base-uri 'self'",

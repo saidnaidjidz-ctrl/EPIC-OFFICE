@@ -42,7 +42,7 @@ export const useAuthStore = create<AuthState>()(
 
         logout: () =>
           set(
-            { user: null, isAuthenticated: false, isLoading: false },
+            { user: null, isAuthenticated: false, isLoading: false, isInitialized: true },
             false,
             'auth/logout'
           ),

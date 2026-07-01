@@ -302,7 +302,20 @@ function LoginCard({
       const res = await apiClient.post<{
         success: boolean;
         tokens: { accessToken: string; refreshToken: string };
-        user: User;
+        user: {
+          id: string;
+          email: string;
+          name: string;
+          role: 'president' | 'committee_leader' | 'member';
+          status?: string;
+          committee_id?: string | null;
+          committeeId?: string | null;
+          avatar_url?: string | null;
+          phone?: string | null;
+          bio?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
       }>('/auth/login', { email, password });
 
       const cookieOpts: Cookies.CookieAttributes = {
@@ -318,7 +331,20 @@ function LoginCard({
         secure: process.env.NODE_ENV === 'production',
       });
 
-      authActions.onLoginSuccess(res.user);
+      const mappedUser: User = {
+        id: res.user.id,
+        email: res.user.email,
+        name: res.user.name,
+        role: res.user.role,
+        status: (res.user.status as any) || 'approved',
+        committee_id: res.user.committee_id ?? res.user.committeeId ?? null,
+        avatar_url: res.user.avatar_url ?? null,
+        phone: res.user.phone ?? null,
+        bio: res.user.bio ?? null,
+        created_at: res.user.created_at ?? new Date().toISOString(),
+        updated_at: res.user.updated_at ?? new Date().toISOString(),
+      };
+      authActions.onLoginSuccess(mappedUser);
       addToast('Successfully signed in! 🎉', 'success');
       setTimeout(() => router.push(redirectTo), 500);
     } catch (err: any) {
@@ -761,7 +787,7 @@ function LoginForm() {
           response?: { status?: number; data?: { message?: string } };
           message?: string;
         };
-        const status = axiosErr?.response?.status;
+        const status = axiosErr?.status;
 
         if (status === 403) {
           setLoginState('rejected');
@@ -774,7 +800,7 @@ function LoginForm() {
 
         addToast(
           status
-            ? (axiosErr.response?.data?.message ?? 'Something went wrong. Please try again.')
+            ? (axiosErr.message ?? 'Something went wrong. Please try again.')
             : 'Connection failed. Check your network and try again.',
           'error'
         );
