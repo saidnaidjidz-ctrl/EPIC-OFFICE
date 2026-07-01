@@ -27,7 +27,7 @@ const envSchema = z.object({
   
   FRONTEND_URL: z.string().url('FRONTEND_URL must be a valid URL (e.g. http://localhost:3001)').default('https://epicclub-frontend.vercel.app'),
   
-  GOOGLE_CLIENT_ID: z.string().default('194348235086-80qcp2rocub565jqikqpu0tlasjjk0du.apps.googleusercontent.com'),
+  GOOGLE_CLIENT_ID: z.string().default('599980788199-log1ipgcl3pm0mh7eleab9em26i423cf.apps.googleusercontent.com'),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
 
   // SMTP Email Configuration (for verification emails)
