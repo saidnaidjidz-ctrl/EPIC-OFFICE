@@ -76,7 +76,7 @@ const generateTokens = async (user) => {
       committee_id: user.committee_id,
     },
     env.JWT_SECRET,
-    { algorithm: 'HS512', expiresIn: '15m' }
+    { algorithm: 'HS512', expiresIn: '2h' }
   );
 
   // 2. Generate random high-entropy refresh token (never store raw token)

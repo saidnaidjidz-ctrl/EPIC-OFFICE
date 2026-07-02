@@ -61,7 +61,7 @@ function DashboardSkeleton() {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
-  const { user } = useAuthStore();
+  const { user, isInitialized } = useAuthStore();
   const role = user?.role || 'member';
 
   const { data, isLoading, error, refetch } = useQuery({
@@ -73,9 +73,23 @@ export default function DashboardPage() {
       return response.data;
     },
     enabled: !!user,
+    retry: 2,
+    retryDelay: 3000,
   });
 
-  if (isLoading || !user) {
+  // While auth is initializing (Zustand rehydrating), show skeleton
+  if (!isInitialized) {
+    return <DashboardSkeleton />;
+  }
+
+  // Auth is done but no user — middleware should redirect to login
+  // Show skeleton briefly while Next.js navigation happens
+  if (!user) {
+    return <DashboardSkeleton />;
+  }
+
+  // Auth ok but data is loading
+  if (isLoading) {
     return <DashboardSkeleton />;
   }
 

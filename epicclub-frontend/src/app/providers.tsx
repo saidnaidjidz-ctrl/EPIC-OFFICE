@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useState, useEffect } from 'react';
 import { apiClient } from '@/lib/api';
-import { authActions } from '@/store/authStore';
+import { authActions, useAuthStore } from '@/store/authStore';
 import type { ApiResponse, User } from '@/types';
 import Cookies from 'js-cookie';
 
@@ -54,14 +54,26 @@ export function Providers({ children }: ProvidersProps) {
 
   // Hydrate auth state from /auth/me on mount
   useEffect(() => {
+    const existingUser = useAuthStore.getState().user;
+
     const restoreSession = async () => {
       const sessionToken = Cookies.get('epicclub_session');
       const refreshToken = Cookies.get('epicclub_refresh');
+
+      // No tokens at all — definitely not logged in
       if (!sessionToken && !refreshToken) {
         authActions.onRestoreFailed();
         return;
       }
 
+      // User already hydrated from sessionStorage and token cookie exists
+      // Just mark as initialized without making a backend call
+      if (existingUser && sessionToken) {
+        useAuthStore.getState().setInitialized(true);
+        return;
+      }
+
+      // Need to verify with backend (e.g. fresh page load without store data)
       try {
         const response = await apiClient.get<{
           success: boolean;
@@ -99,14 +111,22 @@ export function Providers({ children }: ProvidersProps) {
           };
           authActions.onRestore(mappedUser);
         } else {
-          authActions.onRestoreFailed();
+          // Backend returned unexpected data — only clear if no existing user
+          if (!existingUser) authActions.onRestoreFailed();
+          else useAuthStore.getState().setInitialized(true);
         }
       } catch {
-        authActions.onRestoreFailed();
+        // Network / backend error — keep existing user if present, don't wipe session
+        if (!existingUser) {
+          authActions.onRestoreFailed();
+        } else {
+          useAuthStore.getState().setInitialized(true);
+        }
       }
     };
 
     restoreSession();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
