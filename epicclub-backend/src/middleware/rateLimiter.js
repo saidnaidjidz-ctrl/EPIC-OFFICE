@@ -1,6 +1,7 @@
 const rateLimit = require('express-rate-limit');
 const { RedisStore } = require('rate-limit-redis');
 const { getRedisClient, isRedisAvailable } = require('../config/redis');
+const env = require('../config/env');
 
 /**
  * Creates a rate limiter with optional Redis backing.
@@ -19,10 +20,12 @@ const createLimiter = (options) => {
       })
     : undefined; // Defaults to express-rate-limit memory store
 
+  const isDev = env.NODE_ENV === 'development';
+
   return rateLimit({
     store,
     windowMs: options.windowMs || 15 * 60 * 1000, // 15 minutes
-    max: options.max || 100, // Limit each IP to X requests per windowMs
+    max: isDev ? 10000 : (options.max || 100), // High limit in development to avoid 429 blockages
     standardHeaders: true, // Return rate limit info in headers
     legacyHeaders: false, // Disable old rate limit headers
     message: {
@@ -65,7 +68,7 @@ const logoutLimiter = createLimiter({
 // Must be applied AFTER authenticateJWT so req.user is populated.
 const meetingCreationLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 20,
+  max: env.NODE_ENV === 'development' ? 10000 : 20,
   keyGenerator: (req) => req.user?.id ?? req.ip,
   standardHeaders: true,
   legacyHeaders: false,
@@ -79,7 +82,7 @@ const meetingCreationLimiter = rateLimit({
 // Must be applied AFTER authenticateJWT so req.user is populated.
 const dashboardLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 30,
+  max: env.NODE_ENV === 'development' ? 10000 : 30,
   keyGenerator: (req) => req.user?.id ?? req.ip,
   standardHeaders: true,
   legacyHeaders: false,
