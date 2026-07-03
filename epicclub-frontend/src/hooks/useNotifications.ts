@@ -5,6 +5,7 @@ import { useAuthStore } from '@/store/authStore';
 import { useNotificationStore } from '@/store/notificationStore';
 import { playNotificationSound } from '@/lib/notificationSounds';
 import type { Notification, PaginatedResponse, ApiResponse } from '@/types';
+import Cookies from 'js-cookie';
 
 // ─── Query Keys ───────────────────────────────────────────────────────────────
 export const notificationKeys = {
@@ -14,11 +15,15 @@ export const notificationKeys = {
   unreadCount: () => [...notificationKeys.all, 'unread-count'] as const,
 };
 
-// Helper to clean API base URL
+// Helper to build SSE stream URL with token as query param
+// EventSource does not support Authorization headers, so we pass
+// the access token via ?token= which the backend auth middleware accepts.
 const getStreamUrl = () => {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
   const cleanBaseUrl = baseUrl.replace(/\/$/, '');
-  return `${cleanBaseUrl}/notifications/stream`;
+  const token = Cookies.get('epicclub_session');
+  const url = `${cleanBaseUrl}/notifications/stream`;
+  return token ? `${url}?token=${encodeURIComponent(token)}` : url;
 };
 
 export function useNotifications(filters: { page?: number; limit?: number; unread_only?: boolean } = {}) {
@@ -165,8 +170,11 @@ export function useNotifications(filters: { page?: number; limit?: number; unrea
 
   // ─── SSE Stream Connection Manager ──────────────────────────────────────────
   useEffect(() => {
-    if (!isAuthenticated || !user) {
-      // Clean up connection if user logs out
+    const token = Cookies.get('epicclub_session');
+    const isMockToken = token?.startsWith('mock_token_');
+
+    if (!isAuthenticated || !user || isMockToken) {
+      // Clean up connection if user logs out or has a mock token
       if (eventSourceRef.current) {
         eventSourceRef.current.close();
         eventSourceRef.current = null;
@@ -180,8 +188,10 @@ export function useNotifications(filters: { page?: number; limit?: number; unrea
         eventSourceRef.current.close();
       }
 
+      // Build URL with fresh token every connection attempt
       const streamUrl = getStreamUrl();
-      const es = new EventSource(streamUrl, { withCredentials: true });
+      // EventSource does not support headers; token is in the query string
+      const es = new EventSource(streamUrl);
       eventSourceRef.current = es;
 
       es.onopen = () => {
