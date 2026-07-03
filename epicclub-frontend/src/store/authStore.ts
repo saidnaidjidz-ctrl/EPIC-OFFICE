@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { devtools, persist, createJSONStorage } from 'zustand/middleware';
 import type { User, UserRole } from '@/types';
+import Cookies from 'js-cookie';
 
 // ─── State Interface ──────────────────────────────────────────────────────────
 
@@ -40,12 +41,16 @@ export const useAuthStore = create<AuthState>()(
         setUser: (user: User) =>
           set({ user, isAuthenticated: true, isLoading: false }, false, 'auth/setUser'),
 
-        logout: () =>
-          set(
+        logout: () => {
+          Cookies.remove('epicclub_session');
+          Cookies.remove('epicclub_refresh');
+          Cookies.remove('epicclub_role');
+          return set(
             { user: null, isAuthenticated: false, isLoading: false, isInitialized: true },
             false,
             'auth/logout'
-          ),
+          );
+        },
 
         setLoading: (loading: boolean) =>
           set({ isLoading: loading }, false, 'auth/setLoading'),

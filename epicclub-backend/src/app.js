@@ -24,7 +24,13 @@ const dashboardRoutes = require('./modules/dashboard/dashboard.routes');
 const app = express();
 
 // 1. Secure HTTP headers using Helmet.js
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  })
+);
 
 // 2. Strict CORS Configuration (Restrict to specified origins in env)
 app.use(
