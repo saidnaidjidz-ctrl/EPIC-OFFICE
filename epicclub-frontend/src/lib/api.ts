@@ -71,8 +71,15 @@ api.interceptors.response.use(
     };
 
     // ── 401 Unauthorized → try refresh ──────────────────────────────────────
+    // Skip refresh/logout entirely for mock-mode sessions — the backend will
+    // always reject mock_token_* with 401; we let the catch block fall through
+    // to the client-side mock handler instead.
+    const sessionCookie = Cookies.get('epicclub_session');
+    const isMockSession = sessionCookie?.startsWith('mock_token_');
+
     if (
       error.response?.status === 401 &&
+      !isMockSession &&
       !originalRequest._retry &&
       !originalRequest.url?.includes('/auth/refresh') &&
       !originalRequest.url?.includes('/auth/login')
