@@ -231,7 +231,16 @@ export function useNotifications(filters: { page?: number; limit?: number; unrea
       es.onerror = () => {
         setSseConnected(false);
         es.close();
-        
+
+        // Before reconnecting, verify we still have a valid (non-mock) token.
+        // This prevents an infinite 401 retry loop when the session has expired
+        // or the user is in mock/bypass mode.
+        const currentToken = Cookies.get('epicclub_session');
+        if (!currentToken || currentToken.startsWith('mock_token_')) {
+          console.warn('[SSE] Aborting reconnect — no valid session token.');
+          return;
+        }
+
         // Auto-reconnect with exponential backoff (1s, 2s, 4s, 8s ... max 30s)
         const nextDelay = Math.min(reconnectDelayRef.current * 2, 30000);
         reconnectDelayRef.current = nextDelay;
