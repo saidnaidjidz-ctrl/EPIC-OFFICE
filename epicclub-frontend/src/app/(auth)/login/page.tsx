@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, {
   useState,
@@ -24,14 +24,13 @@ import {
   Eye,
   EyeOff,
 } from 'lucide-react';
-import Cookies from 'js-cookie';
 import axios from 'axios';
 import Link from 'next/link';
 import { apiClient, API_BASE_URL } from '@/lib/api';
-import { authActions, useAuthStore } from '@/store/authStore';
+import { useAuthStore } from '@/store/authStore';
 import type { User } from '@/types';
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 type LoginState = 'idle' | 'loading' | 'pending' | 'rejected';
 
@@ -56,7 +55,7 @@ interface GoogleLoginPending {
   message: string;
 }
 
-// ─── Toast ────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Toast â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 interface ToastItem {
   id: string;
@@ -110,7 +109,7 @@ function ToastContainer({
   );
 }
 
-// ─── Pending State ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Pending State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function PendingState({
   onCheckStatus,
@@ -191,7 +190,7 @@ function PendingState({
           {isChecking ? (
             <>
               <span className="spinner !w-4 !h-4 !border-white/30 !border-t-white" />
-              Checking…
+              Checkingâ€¦
             </>
           ) : (
             <>
@@ -222,7 +221,7 @@ function PendingState({
   );
 }
 
-// ─── Rejected State ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Rejected State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function RejectedState({ onTryAgain }: { onTryAgain: () => void }) {
   return (
@@ -265,7 +264,7 @@ function RejectedState({ onTryAgain }: { onTryAgain: () => void }) {
   );
 }
 
-// ─── Login Card ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ Login Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function LoginCard({
   onGoogleSignIn,
@@ -345,7 +344,7 @@ function LoginCard({
         updated_at: res.user.updated_at ?? new Date().toISOString(),
       };
       authActions.onLoginSuccess(mappedUser);
-      addToast('Successfully signed in! 🎉', 'success');
+      addToast('Successfully signed in! ðŸŽ‰', 'success');
       setTimeout(() => router.push(redirectTo), 500);
     } catch (err: any) {
       console.error('[Credentials Login Error]', err);
@@ -447,7 +446,7 @@ function LoginCard({
           {isLoading ? (
             <div className="w-full flex items-center justify-center gap-3 px-5 py-3 bg-white rounded-xl font-semibold text-gray-800 text-sm shadow-card min-h-[44px]">
               <div className="w-5 h-5 border-2 border-gray-200 border-t-secondary rounded-full animate-spin" />
-              <span className="text-gray-500">Verifying session…</span>
+              <span className="text-gray-500">Verifying sessionâ€¦</span>
             </div>
           ) : (
             <div
@@ -463,7 +462,7 @@ function LoginCard({
               className="text-xs text-text-secondary flex items-center gap-1.5"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-warning animate-pulse inline-block" />
-              Loading Google Sign-In…
+              Loading Google Sign-Inâ€¦
             </motion.p>
           )}
         </motion.div>
@@ -501,7 +500,7 @@ function LoginCard({
               <input
                 id="login-password"
                 type={showPassword ? 'text' : 'password'}
-                placeholder="••••••••"
+                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -528,7 +527,7 @@ function LoginCard({
             {isSubmitting ? (
               <>
                 <span className="spinner !w-4 !h-4 !border-white/30 !border-t-white" />
-                Signing in…
+                Signing inâ€¦
               </>
             ) : (
               <>
@@ -550,95 +549,6 @@ function LoginCard({
         </motion.form>
       )}
 
-      {/* Developer Bypass Panel for Local Testing */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="w-full flex flex-col gap-3 p-4 rounded-xl bg-surface-2/30 border border-border/40 mt-1"
-      >
-        <div className="flex items-center justify-between text-2xs text-text-secondary uppercase tracking-wider font-semibold">
-          <span>Local Development Bypass</span>
-          <span className="text-accent-secondary font-mono text-[10px]">No DB/Auth Required</span>
-        </div>
-        <div className="grid grid-cols-3 gap-2">
-          <button
-            onClick={() => {
-              const mockUser = {
-                id: 'mock-president',
-                email: 'president@epicclub.com',
-                name: 'President Demo (Bypass)',
-                role: 'president' as const,
-                status: 'approved' as const,
-                committee_id: null,
-                avatar_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&auto=format&fit=crop&q=80',
-                phone: '+12345678',
-                bio: 'President & Administrator',
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-              };
-              Cookies.set('epicclub_session', 'mock_token_president', { expires: 1/24, sameSite: 'strict' });
-              Cookies.set('epicclub_role', 'president', { expires: 1/24, sameSite: 'strict' });
-              authActions.onLoginSuccess(mockUser);
-              addToast('Logged in as President! 👑', 'success');
-              setTimeout(() => router.push(redirectTo), 500);
-            }}
-            className="px-2 py-2 bg-gradient-to-r from-accent/20 to-accent-secondary/20 hover:from-accent/30 hover:to-accent-secondary/30 text-accent border border-accent/20 rounded-lg text-xs font-bold transition-all active:scale-95"
-          >
-            President 👑
-          </button>
-          <button
-            onClick={() => {
-              const mockUser = {
-                id: 'mock-leader',
-                email: 'leader@epicclub.com',
-                name: 'Leader Demo (Bypass)',
-                role: 'committee_leader' as const,
-                status: 'approved' as const,
-                committee_id: 'mock-committee-tech',
-                avatar_url: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=80&auto=format&fit=crop&q=80',
-                phone: '+12345679',
-                bio: 'Technical Committee Leader',
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-              };
-              Cookies.set('epicclub_session', 'mock_token_leader', { expires: 1/24, sameSite: 'strict' });
-              Cookies.set('epicclub_role', 'committee_leader', { expires: 1/24, sameSite: 'strict' });
-              authActions.onLoginSuccess(mockUser);
-              addToast('Logged in as Leader! 🏛️', 'success');
-              setTimeout(() => router.push(redirectTo), 500);
-            }}
-            className="px-2 py-2 bg-gradient-to-r from-secondary/20 to-accent/20 hover:from-secondary/30 hover:to-accent/30 text-secondary border border-secondary/20 rounded-lg text-xs font-bold transition-all active:scale-95"
-          >
-            Leader 🏛️
-          </button>
-          <button
-            onClick={() => {
-              const mockUser = {
-                id: 'mock-member',
-                email: 'member@epicclub.com',
-                name: 'Member Demo (Bypass)',
-                role: 'member' as const,
-                status: 'approved' as const,
-                committee_id: 'mock-committee-tech',
-                avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80',
-                phone: '+12345680',
-                bio: 'Active Member',
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-              };
-              Cookies.set('epicclub_session', 'mock_token_member', { expires: 1/24, sameSite: 'strict' });
-              Cookies.set('epicclub_role', 'member', { expires: 1/24, sameSite: 'strict' });
-              authActions.onLoginSuccess(mockUser);
-              addToast('Logged in as Member! ✅', 'success');
-              setTimeout(() => router.push(redirectTo), 500);
-            }}
-            className="px-2 py-2 bg-gradient-to-r from-success/20 to-success/10 hover:from-success/30 hover:to-success/20 text-success border border-success/20 rounded-lg text-xs font-bold transition-all active:scale-95"
-          >
-            Member ✅
-          </button>
-        </div>
-      </motion.div>
 
       {/* Security note */}
       <motion.div
@@ -654,7 +564,7 @@ function LoginCard({
   );
 }
 
-// ─── Main Login Form ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Main Login Form â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function LoginForm() {
   const router = useRouter();
@@ -668,7 +578,7 @@ function LoginForm() {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const [serverWaking, setServerWaking] = useState(false);
 
-  // ── Wake up Render server on page load ──────────────────────────────────
+  // â”€â”€ Wake up Render server on page load â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     const wakeServer = async () => {
       try {
@@ -685,7 +595,7 @@ function LoginForm() {
       }
     };
 
-    // Probe the backend – if slow, show waking indicator
+    // Probe the backend â€“ if slow, show waking indicator
     const timer = setTimeout(() => {
       setServerWaking(true);
       wakeServer();
@@ -703,14 +613,14 @@ function LoginForm() {
   // Stable ref so GIS callback always calls the latest version of the handler
   const handleGoogleSuccessRef = useRef<((idToken: string) => Promise<void>) | null>(null);
 
-  // ── Redirect if already authenticated ─────────────────────────────────────
+  // â”€â”€ Redirect if already authenticated â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     if (isInitialized && isAuthenticated) {
       router.replace(redirectTo);
     }
   }, [isInitialized, isAuthenticated, router, redirectTo]);
 
-  // ── Toast helpers ──────────────────────────────────────────────────────────
+  // â”€â”€ Toast helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const addToast = useCallback(
     (message: string, type: ToastItem['type'] = 'error') => {
       const id = Math.random().toString(36).slice(2);
@@ -727,7 +637,7 @@ function LoginForm() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  // ── Google Auth → Backend ─────────────────────────────────────────────────
+  // â”€â”€ Google Auth â†’ Backend â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const handleGoogleSuccess = useCallback(
     async (idToken: string) => {
       setLoginState('loading');
@@ -780,7 +690,7 @@ function LoginForm() {
         };
         authActions.onLoginSuccess(storeUser);
 
-        addToast('Welcome to Epic Club! 🎉', 'success');
+        addToast('Welcome to Epic Club! ðŸŽ‰', 'success');
         setTimeout(() => router.push(redirectTo), 500);
       } catch (err: unknown) {
         const axiosErr = err as {
@@ -815,7 +725,7 @@ function LoginForm() {
     handleGoogleSuccessRef.current = handleGoogleSuccess;
   }, [handleGoogleSuccess]);
 
-  // ── GIS credential callback (stable identity) ──────────────────────────────
+  // â”€â”€ GIS credential callback (stable identity) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const handleCredentialResponse = useCallback(
     (response: GoogleCredentialResponse) => {
       console.log('[LOGIN] Google response received:', response);
@@ -825,7 +735,7 @@ function LoginForm() {
     []
   );
 
-  // ── Initialize and Load GIS ──────────────────────────────────────────────
+  // â”€â”€ Initialize and Load GIS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     const g = (window as any).google;
     if (g?.accounts?.id) {
@@ -870,7 +780,7 @@ function LoginForm() {
     };
   }, [handleCredentialResponse, addToast]);
 
-  // ── Render Google Button when GIS is ready ──────────────────────────────
+  // â”€â”€ Render Google Button when GIS is ready â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     if (gisReady && (loginState === 'idle' || loginState === 'loading')) {
       const btn = document.getElementById('google-signin-btn');
@@ -885,7 +795,7 @@ function LoginForm() {
     }
   }, [gisReady, loginState]);
 
-  // ── Poll approval status ──────────────────────────────────────────────────
+  // â”€â”€ Poll approval status â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const checkApprovalStatus = useCallback(async () => {
     if (isChecking) return;
     setIsChecking(true);
@@ -907,12 +817,12 @@ function LoginForm() {
           secure: process.env.NODE_ENV === 'production',
         });
 
-        addToast('Your account has been approved! Redirecting…', 'success');
+        addToast('Your account has been approved! Redirectingâ€¦', 'success');
         setTimeout(() => router.push(redirectTo), 800);
       } else if (userStatus === 'rejected') {
         setLoginState('rejected');
       } else {
-        addToast("Still under review — we'll check again in 30s.", 'info');
+        addToast("Still under review â€” we'll check again in 30s.", 'info');
       }
     } catch {
       addToast('Could not check status. Please try again.', 'error');
@@ -921,7 +831,7 @@ function LoginForm() {
     }
   }, [isChecking, addToast, redirectTo, router]);
 
-  // ─────────────────────────────────────────────────────────────────────────
+  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   return (
     <>
@@ -935,11 +845,11 @@ function LoginForm() {
           className="w-full mb-4 px-4 py-3 rounded-xl bg-warning/10 border border-warning/30 flex items-center gap-3 text-xs text-warning"
         >
           <span className="w-3 h-3 rounded-full bg-warning animate-pulse flex-shrink-0" />
-          <span>Server is waking up from sleep mode — please wait a moment before signing in…</span>
+          <span>Server is waking up from sleep mode â€” please wait a moment before signing inâ€¦</span>
         </motion.div>
       )}
 
-      {/* Card — the layout already centers this */}
+      {/* Card â€” the layout already centers this */}
       <motion.div
         initial={{ opacity: 0, y: 24, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -992,7 +902,7 @@ function LoginForm() {
   );
 }
 
-// ─── Page Export ──────────────────────────────────────────────────────────────
+// â”€â”€â”€ Page Export â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function LoginPage() {
   return (
@@ -1001,7 +911,7 @@ export default function LoginPage() {
         <div className="flex items-center justify-center py-20">
           <div className="flex flex-col items-center gap-4">
             <div className="spinner spinner-lg" />
-            <p className="text-xs text-text-secondary">Loading…</p>
+            <p className="text-xs text-text-secondary">Loadingâ€¦</p>
           </div>
         </div>
       }
@@ -1010,3 +920,4 @@ export default function LoginPage() {
     </Suspense>
   );
 }
+
