@@ -28,7 +28,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import { apiClient, API_BASE_URL } from '@/lib/api';
 import Cookies from 'js-cookie';
-import { useAuthStore } from '@/store/authStore';
+import { authActions, useAuthStore } from '@/store/authStore';
 import type { User } from '@/types';
 
 // â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
