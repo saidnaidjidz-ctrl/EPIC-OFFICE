@@ -2,8 +2,22 @@
   "version": 2,
   "builds": [
     {
+      "src": "epicclub-backend/package.json",
+      "use": "@vercel/node"
+    },
+    {
       "src": "epicclub-frontend/package.json",
       "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "epicclub-backend/src/app.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "epicclub-frontend"
     }
   ]
 }
