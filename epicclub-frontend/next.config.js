@@ -51,7 +51,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: https: https://images.unsplash.com",
-              "connect-src 'self' http://localhost:5000 https://api.epicclub.com https://accounts.google.com https://epic-office.vercel.app https://*.vercel.app https://qkxxmwgdpgwakxnfyabj.supabase.co https://*.supabase.co",
+              "connect-src 'self' http://localhost:5000 https://api.epicclub.com https://accounts.google.com https://epic-office.vercel.app https://*.vercel.app https://epic-office.onrender.com https://epic-office-2hf7.onrender.com https://*.onrender.com https://qkxxmwgdpgwakxnfyabj.supabase.co https://*.supabase.co",
               "frame-src 'self' https://accounts.google.com",
               "frame-ancestors 'self'",
               "base-uri 'self'",
