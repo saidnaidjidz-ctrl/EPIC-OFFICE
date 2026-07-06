@@ -483,6 +483,7 @@ function LoginCard({
             <div className="relative">
               <input
                 id="login-email"
+                name="email"
                 type="email"
                 placeholder="you@epicclub.com"
                 required
@@ -500,8 +501,9 @@ function LoginCard({
             <div className="relative">
               <input
                 id="login-password"
+                name="password"
                 type={showPassword ? 'text' : 'password'}
-                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                placeholder="••••••••"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
