@@ -52,8 +52,10 @@ interface GoogleLoginApproved {
 }
 
 interface GoogleLoginPending {
-  status: 'pending';
+  status: 'pending' | 'pending_verification';
   message: string;
+  userId?: string;
+  maskedEmail?: string;
 }
 
 // â”€â”€â”€ Toast â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -657,7 +659,7 @@ function LoginForm() {
         const data = res.data;
 
         // 202 Pending approval
-        if ('status' in data && data.status === 'pending') {
+        if ('status' in data && (data.status === 'pending' || data.status === 'pending_verification')) {
           setLoginState('pending');
           return;
         }
@@ -700,7 +702,7 @@ function LoginForm() {
           response?: { status?: number; data?: { message?: string } };
           message?: string;
         };
-        const status = axiosErr?.status;
+        const status = axiosErr?.response?.status;
 
         if (status === 403) {
           setLoginState('rejected');
@@ -712,9 +714,9 @@ function LoginForm() {
         }
 
         addToast(
-          status
-            ? (axiosErr.message ?? 'Something went wrong. Please try again.')
-            : 'Connection failed. Check your network and try again.',
+          axiosErr?.response?.data?.message
+            ?? axiosErr?.message
+            ?? (status ? 'Something went wrong. Please try again.' : 'Connection failed. Check your network and try again.'),
           'error'
         );
         setLoginState('idle');

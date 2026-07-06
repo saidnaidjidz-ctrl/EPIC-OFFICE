@@ -89,10 +89,10 @@ export default function CommitteesPage() {
     setSheetOpen(true);
     setDetailLoading(true);
     try {
-      const response = await apiClient.get<ApiResponse<CommitteeDetail>>(
+      const response = await apiClient.get<any>(
         `/committees/${committee.id}`
       );
-      setSelectedCommittee(response.data);
+      setSelectedCommittee(response.committee);
     } catch {
       setSelectedCommittee(null);
     } finally {

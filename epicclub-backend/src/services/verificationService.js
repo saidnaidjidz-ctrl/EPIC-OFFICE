@@ -39,6 +39,19 @@ const createTransporter = () => {
  */
 const sendEmail = async ({ to, subject, html, text }) => {
   try {
+    if (
+      !env.SMTP_USER ||
+      env.SMTP_USER === 'your-email@gmail.com' ||
+      env.SMTP_USER === 'test@gmail.com' ||
+      env.SMTP_USER.includes('your-email')
+    ) {
+      console.log('\n✉️  [EMAIL BYPASS] Developer Mode: Email was not sent via SMTP.');
+      console.log(`To: ${to}`);
+      console.log(`Subject: ${subject}`);
+      console.log(`Body:\n${text || html}\n`);
+      return;
+    }
+
     const transporter = createTransporter();
     await transporter.sendMail({
       from: `"Epic Club" <${env.SMTP_FROM}>`,

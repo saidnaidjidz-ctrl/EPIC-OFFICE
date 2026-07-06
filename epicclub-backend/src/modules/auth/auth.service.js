@@ -115,9 +115,11 @@ const handleGoogleUserFlow = async (profile) => {
     const userCountRes = await db.query('SELECT COUNT(*) as count FROM users WHERE deleted_at IS NULL');
     const totalUsers = parseInt(userCountRes.rows[0].count, 10);
     const role = totalUsers === 0 ? 'president' : 'member';
-    const status = totalUsers === 0 ? 'approved' : 'pending_verification';
+    // Google has already verified the user's email, so skip email verification
+    // and go straight to pending (awaiting admin approval) for non-president users
+    const status = totalUsers === 0 ? 'approved' : 'pending';
 
-    // New user: create with pending_verification status
+    // New user: create with pending status (email already verified via Google)
     const insertRes = await db.query(
       `INSERT INTO users (google_id, email, name, avatar_url, role, status)
        VALUES ($1, $2, $3, $4, $5, $6)
@@ -137,14 +139,16 @@ const handleGoogleUserFlow = async (profile) => {
       );
       user = updateRes.rows[0];
     }
-  }
 
-  // Trigger verification email for brand new non-president Google users
-  if (isNewUser && user.status === 'pending_verification') {
-    const { sendVerificationEmail } = require('../../services/verificationService');
-    sendVerificationEmail(user).catch((err) => {
-      console.error('[AUTH] Failed to send verification email:', err.message);
-    });
+    // If an existing user registered via credentials (pending_verification) and now signs in
+    // with Google, auto-upgrade their email verification status to 'pending' (admin approval).
+    if (user.status === 'pending_verification') {
+      const upgradeRes = await db.query(
+        'UPDATE users SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
+        ['pending', user.id]
+      );
+      user = upgradeRes.rows[0];
+    }
   }
 
   return {

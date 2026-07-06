@@ -67,10 +67,10 @@ export default function DashboardPage() {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['dashboard-stats', role],
     queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<PresidentDashboard | LeaderDashboard | MemberDashboard>>(
+      const response = await apiClient.get<any>(
         '/dashboard/stats'
       );
-      return response.data;
+      return response;
     },
     enabled: !!user,
     retry: 2,

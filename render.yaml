@@ -19,7 +19,7 @@ services:
       - key: JWT_REFRESH_SECRET
         generateValue: true
       - key: GOOGLE_CLIENT_ID
-        value: 599980788199-log1ipgcl3pm0mh7eleab9em26i423cf.apps.googleusercontent.com
+        value: 599980788199-qbblmjtvf4feqppnd0b09h7igl5t62nm.apps.googleusercontent.com
       - key: CORS_ALLOWED_ORIGINS
         value: https://epicclub-frontend.vercel.app,https://epicclub-frontend-4otl7nq07-epic-office.vercel.app,http://localhost:3000
       - key: FRONTEND_URL
