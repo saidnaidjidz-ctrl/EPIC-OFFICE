@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, {
   useState,
@@ -668,7 +668,7 @@ function LoginForm() {
         const approved = data as GoogleLoginApproved;
 
         const cookieOpts: Cookies.CookieAttributes = {
-          expires: 1 / 96, // 15 min
+          expires: 1 / 24, // 1 hour — matches access token lifetime
           sameSite: 'strict',
           secure: process.env.NODE_ENV === 'production',
         };
@@ -817,7 +817,7 @@ function LoginForm() {
 
         // Refresh role cookie from polled user
         Cookies.set('epicclub_role', res.data.user.role, {
-          expires: 1 / 96,
+          expires: 1 / 24, // 1 hour — matches access token lifetime
           sameSite: 'strict',
           secure: process.env.NODE_ENV === 'production',
         });
