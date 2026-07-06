@@ -17,16 +17,17 @@ class CommitteesService {
    * @returns {Promise<object>} Created committee row
    */
   async createCommittee({ name, description, leader_id }) {
+    const finalLeaderId = (leader_id && leader_id.trim() !== '') ? leader_id : null;
     const client = await db.pool.connect();
     try {
       await client.query('BEGIN');
-
+ 
       // Validate leader if provided
-      if (leader_id) {
+      if (finalLeaderId) {
         const leaderRes = await client.query(
           `SELECT id, role FROM users
            WHERE id = $1 AND status = 'approved' AND deleted_at IS NULL`,
-          [leader_id]
+          [finalLeaderId]
         );
         if (leaderRes.rowCount === 0) {
           throw Object.assign(
@@ -35,26 +36,26 @@ class CommitteesService {
           );
         }
       }
-
+ 
       // Insert committee
       const insertRes = await client.query(
         `INSERT INTO committees (name, description, leader_id)
          VALUES ($1, $2, $3)
          RETURNING *`,
-        [name, description ?? null, leader_id ?? null]
+        [name, description ?? null, finalLeaderId]
       );
       const committee = insertRes.rows[0];
-
+ 
       // Promote leader's role
-      if (leader_id) {
+      if (finalLeaderId) {
         await client.query(
           `UPDATE users
            SET role = 'committee_leader', committee_id = $1, updated_at = NOW()
            WHERE id = $2`,
-          [committee.id, leader_id]
+          [committee.id, finalLeaderId]
         );
       }
-
+ 
       await client.query('COMMIT');
 
       // Invalidate dashboard cache
@@ -193,6 +194,10 @@ class CommitteesService {
    * @returns {Promise<object>} Updated committee
    */
   async updateCommittee(id, payload) {
+    if (payload.leader_id === '') {
+      payload.leader_id = null;
+    }
+
     const client = await db.pool.connect();
     try {
       await client.query('BEGIN');
@@ -208,17 +213,19 @@ class CommitteesService {
       const current = currentRes.rows[0];
 
       // Validate new leader if changing
-      if (payload.leader_id && payload.leader_id !== current.leader_id) {
-        const newLeaderRes = await client.query(
-          `SELECT id FROM users
-           WHERE id = $1 AND status = 'approved' AND deleted_at IS NULL`,
-          [payload.leader_id]
-        );
-        if (newLeaderRes.rowCount === 0) {
-          throw Object.assign(
-            new Error('New leader not found or not approved'),
-            { statusCode: 422 }
+      if (payload.leader_id !== undefined && payload.leader_id !== current.leader_id) {
+        if (payload.leader_id) {
+          const newLeaderRes = await client.query(
+            `SELECT id FROM users
+             WHERE id = $1 AND status = 'approved' AND deleted_at IS NULL`,
+            [payload.leader_id]
           );
+          if (newLeaderRes.rowCount === 0) {
+            throw Object.assign(
+              new Error('New leader not found or not approved'),
+              { statusCode: 422 }
+            );
+          }
         }
 
         // Demote old leader (if any and not also president)
@@ -237,12 +244,14 @@ class CommitteesService {
         }
 
         // Promote new leader
-        await client.query(
-          `UPDATE users
-           SET role = 'committee_leader', committee_id = $1, updated_at = NOW()
-           WHERE id = $2`,
-          [id, payload.leader_id]
-        );
+        if (payload.leader_id) {
+          await client.query(
+            `UPDATE users
+             SET role = 'committee_leader', committee_id = $1, updated_at = NOW()
+             WHERE id = $2`,
+            [id, payload.leader_id]
+          );
+        }
       }
 
       // Build parameterized SET clause — only update supplied fields

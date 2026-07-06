@@ -14,7 +14,7 @@ import type { ApiResponse, Committee, User, PaginatedResponse } from '@/types';
 const committeeSchema = z.object({
   name: z.string().min(3, 'Name must be at least 3 characters'),
   description: z.string().optional(),
-  leader_id: z.string().min(1, 'Please select a committee leader'),
+  leader_id: z.string().optional(),
 });
 
 type CommitteeFormData = z.infer<typeof committeeSchema>;
