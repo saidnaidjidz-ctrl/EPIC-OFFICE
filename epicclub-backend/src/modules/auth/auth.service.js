@@ -182,9 +182,9 @@ const registerCredentials = async (name, email, password) => {
   const userCountRes = await db.query('SELECT COUNT(*) as count FROM users WHERE deleted_at IS NULL');
   const totalUsers = parseInt(userCountRes.rows[0].count, 10);
 
-  // First user is approved President (skips verification). Everyone else must verify email first.
+  // First user is approved President (skips verification). Everyone else goes straight to pending admin approval.
   const role = totalUsers === 0 ? 'president' : 'member';
-  const status = totalUsers === 0 ? 'approved' : 'pending_verification';
+  const status = totalUsers === 0 ? 'approved' : 'pending';
 
   // Hash password
   const passwordHash = await bcrypt.hash(password, 10);
