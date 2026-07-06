@@ -134,7 +134,9 @@ export interface Meeting {
   committee?: Pick<Committee, 'id' | 'name'>;
   created_by: string;
   creator?: Pick<User, 'id' | 'name'>;
-  attendee_count: number;
+  creator_name?: string;           // returned by backend JOIN on users table
+  attendee_count?: number;
+  attendees?: number | { id: string; name: string; email: string }[]; // count or array
   created_at: string;
   updated_at: string;
 }

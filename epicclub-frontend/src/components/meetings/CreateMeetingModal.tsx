@@ -18,7 +18,7 @@ const meetingSchema = z.object({
   location: z.string().optional(),
   meeting_link: z.string().url('Must be a valid URL').optional().or(z.literal('')),
   committee_id: z.string().optional(),
-  attendees: z.array(z.string()).min(1, 'Select at least one attendee'),
+  attendees: z.array(z.string()).optional().default([]),
 });
 
 type MeetingFormData = z.infer<typeof meetingSchema>;
@@ -95,13 +95,19 @@ export default function CreateMeetingModal({
 
   // ── Mutations ─────────────────────────────────────────────────────────────
 
+  // Map form data (snake_case) → backend payload (camelCase)
+  const toPayload = (data: MeetingFormData) => ({
+    title: data.title,
+    description: data.description || undefined,
+    scheduledAt: data.scheduled_at,          // backend expects camelCase
+    location: data.location || undefined,
+    meetingLink: data.meeting_link || undefined, // backend expects camelCase
+    attendeeIds: data.attendees?.length ? data.attendees : undefined, // backend expects camelCase array
+  });
+
   const createMutation = useMutation({
     mutationFn: (data: MeetingFormData) =>
-      apiClient.post<ApiResponse<Meeting>>('/meetings', {
-        ...data,
-        meeting_link: data.meeting_link || undefined,
-        committee_id: data.committee_id || undefined,
-      }),
+      apiClient.post<ApiResponse<Meeting>>('/meetings', toPayload(data)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['meetings'] });
       handleClose();
@@ -110,11 +116,7 @@ export default function CreateMeetingModal({
 
   const editMutation = useMutation({
     mutationFn: (data: MeetingFormData) =>
-      apiClient.patch<ApiResponse<Meeting>>(`/meetings/${editingMeeting?.id}`, {
-        ...data,
-        meeting_link: data.meeting_link || undefined,
-        committee_id: data.committee_id || undefined,
-      }),
+      apiClient.patch<ApiResponse<Meeting>>(`/meetings/${editingMeeting?.id}`, toPayload(data)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['meetings'] });
       handleClose();
