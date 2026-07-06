@@ -39,17 +39,14 @@ const createLimiter = (options) => {
 // General rate limiter for typical REST endpoints
 const apiLimiter = createLimiter({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 300,
+  max: 100000,
   message: 'Too many requests. Please try again after 15 minutes.',
 });
 
-// Google login: max 500 requests per 15 minutes per IP
-// High limit needed because all Vercel frontend requests
-// may share the same outbound IP on Render's proxy.
+// Google login: max 100000 requests per 15 minutes
 const googleLoginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 500,
-  // Use IP fallback — individual accounts are already protected by Google token validation
+  max: 100000,
   keyGenerator: (req) => req.ip || 'unknown',
   standardHeaders: true,
   legacyHeaders: false,
@@ -60,45 +57,43 @@ const googleLoginLimiter = rateLimit({
   },
 });
 
-// Token refresh: max 20 requests per 15 minutes
+// Token refresh: max 100000 requests per 15 minutes
 const tokenRefreshLimiter = createLimiter({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: 100000,
   message: 'Too many token refresh attempts. Please try again after 15 minutes.',
 });
 
-// Logout: max 30 requests per 15 minutes
+// Logout: max 100000 requests per 15 minutes
 const logoutLimiter = createLimiter({
   windowMs: 15 * 60 * 1000,
-  max: 30,
+  max: 100000,
   message: 'Too many logout requests. Please try again after 15 minutes.',
 });
 
-// Meeting creation: max 20 per hour — keyed by authenticated user ID
-// Must be applied AFTER authenticateJWT so req.user is populated.
+// Meeting creation: max 100000 per hour
 const meetingCreationLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: env.NODE_ENV === 'development' ? 10000 : 20,
+  max: 100000,
   keyGenerator: (req) => req.user?.id ?? req.ip,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
     success: false,
-    message: 'Meeting creation limit reached (20/hour). Please try again later.',
+    message: 'Meeting creation limit reached. Please try again later.',
   },
 });
 
-// Dashboard: max 30 requests per minute — keyed by authenticated user ID
-// Must be applied AFTER authenticateJWT so req.user is populated.
+// Dashboard: max 100000 requests per minute
 const dashboardLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: env.NODE_ENV === 'development' ? 10000 : 30,
+  max: 100000,
   keyGenerator: (req) => req.user?.id ?? req.ip,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
     success: false,
-    message: 'Dashboard request limit reached (30/minute). Please try again later.',
+    message: 'Dashboard request limit reached. Please try again later.',
   },
 });
 
