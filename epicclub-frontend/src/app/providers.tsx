@@ -67,13 +67,12 @@ export function Providers({ children }: ProvidersProps) {
       }
 
       // User already hydrated from sessionStorage and token cookie exists
-      // Just mark as initialized without making a backend call
+      // Mark as initialized to avoid UI flickering, but run a background check to sync roles
       if (existingUser && sessionToken) {
         useAuthStore.getState().setInitialized(true);
-        return;
       }
 
-      // Need to verify with backend (e.g. fresh page load without store data)
+      // Verify and sync state with backend
       try {
         const response = await apiClient.get<{
           success: boolean;
@@ -110,6 +109,13 @@ export function Providers({ children }: ProvidersProps) {
             updated_at: response.user.updated_at ?? new Date().toISOString(),
           };
           authActions.onRestore(mappedUser);
+          
+          // Sync role cookie for next.js middleware
+          Cookies.set('epicclub_role', response.user.role, {
+            expires: 1 / 24, // 1 hour
+            sameSite: 'strict',
+            secure: process.env.NODE_ENV === 'production',
+          });
         } else {
           // Backend returned unexpected data — only clear if no existing user
           if (!existingUser) authActions.onRestoreFailed();

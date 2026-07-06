@@ -64,7 +64,7 @@ export default function CommitteesPage() {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['committees', search],
     queryFn: () =>
-      apiClient.get<PaginatedResponse<Committee>>('/committees', {
+      apiClient.get<{ success: boolean; count: number; committees: Committee[] }>('/committees', {
         search: search || undefined,
         limit: 50,
       }),
@@ -72,7 +72,7 @@ export default function CommitteesPage() {
     staleTime: 30_000,
   });
 
-  const committees = data?.data || [];
+  const committees = data?.committees || [];
 
   // ── Delete Committee ────────────────────────────────────────────────────────
 

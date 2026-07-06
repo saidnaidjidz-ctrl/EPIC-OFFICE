@@ -80,18 +80,18 @@ export default function CreateMeetingModal({
   // Fetch data
   const { data: committeesData } = useQuery({
     queryKey: ['committees-list'],
-    queryFn: () => apiClient.get<PaginatedResponse<Committee>>('/committees', { limit: 100 }),
+    queryFn: () => apiClient.get<{ success: boolean; committees: Committee[] }>('/committees', { limit: 100 }),
     enabled: open,
   });
   const { data: usersData } = useQuery({
     queryKey: ['users-list-meeting'],
     queryFn: () =>
-      apiClient.get<PaginatedResponse<User>>('/users', { limit: 200, status: 'approved' }),
+      apiClient.get<{ success: boolean; users: User[] }>('/users', { limit: 200, status: 'approved' }),
     enabled: open,
   });
 
-  const committees = committeesData?.data || [];
-  const users = usersData?.data || [];
+  const committees = committeesData?.committees || [];
+  const users = usersData?.users || [];
 
   // ── Mutations ─────────────────────────────────────────────────────────────
 

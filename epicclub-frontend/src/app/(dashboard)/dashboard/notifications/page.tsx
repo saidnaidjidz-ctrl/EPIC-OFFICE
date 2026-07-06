@@ -141,12 +141,12 @@ export default function NotificationsPage() {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['notifications'],
     queryFn: () =>
-      apiClient.get<PaginatedResponse<Notification>>('/notifications', { limit: 100 }),
+      apiClient.get<{ success: boolean; notifications: Notification[] }>('/notifications', { limit: 100 }),
     enabled: !!user,
     staleTime: 15_000,
   });
 
-  const allNotifications = data?.data || [];
+  const allNotifications = data?.notifications || [];
   const unreadCount = allNotifications.filter((n) => !n.is_read).length;
 
   const filtered = allNotifications.filter((n) => {
