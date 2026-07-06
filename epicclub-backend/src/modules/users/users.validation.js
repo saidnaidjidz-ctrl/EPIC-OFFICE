@@ -85,6 +85,7 @@ const updateRoleValidation = [
     .isIn(['committee_leader', 'member'])
     .withMessage('Role must be either committee_leader or member'),
   body('committee_id')
+    .optional({ nullable: true, checkFalsy: true })
     .isUUID()
     .withMessage('Committee ID must be a valid UUID'),
 ];
