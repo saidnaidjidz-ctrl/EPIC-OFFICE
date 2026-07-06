@@ -4,17 +4,16 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { X, Users, FileText, Crown } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { X, Users, FileText } from 'lucide-react';
 import { apiClient } from '@/lib/api';
-import type { ApiResponse, Committee, User, PaginatedResponse } from '@/types';
+import type { ApiResponse, Committee } from '@/types';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
 const committeeSchema = z.object({
   name: z.string().min(3, 'Name must be at least 3 characters'),
   description: z.string().optional(),
-  leader_id: z.string().optional(),
 });
 
 type CommitteeFormData = z.infer<typeof committeeSchema>;
@@ -47,7 +46,6 @@ export default function CreateCommitteeModal({
     defaultValues: {
       name: editingCommittee?.name || '',
       description: editingCommittee?.description || '',
-      leader_id: editingCommittee?.leader_id || '',
     },
   });
 
@@ -56,18 +54,8 @@ export default function CreateCommitteeModal({
     reset({
       name: editingCommittee?.name || '',
       description: editingCommittee?.description || '',
-      leader_id: editingCommittee?.leader_id || '',
     });
   }, [editingCommittee, reset, open]);
-
-  // Fetch users for leader selection
-  const { data: usersData } = useQuery({
-    queryKey: ['users-list-leaders'],
-    queryFn: () =>
-      apiClient.get<PaginatedResponse<User>>('/users', { limit: 100, status: 'approved' }),
-    enabled: open,
-  });
-  const users = usersData?.data || [];
 
   // ── Mutations ──────────────────────────────────────────────────────────────
 
@@ -168,24 +156,6 @@ export default function CreateCommitteeModal({
               rows={3}
               placeholder="Describe the committee's purpose and responsibilities..."
             />
-          </div>
-
-          {/* Leader */}
-          <div className="flex flex-col gap-1.5">
-            <label className="form-label flex items-center gap-2">
-              <Crown className="w-3.5 h-3.5 text-warning" /> Committee Leader
-            </label>
-            <select {...register('leader_id')} className="form-input">
-              <option value="">Select a leader...</option>
-              {users.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.name} ({u.email})
-                </option>
-              ))}
-            </select>
-            {errors.leader_id && (
-              <p className="text-error text-xs">{errors.leader_id.message}</p>
-            )}
           </div>
 
           {/* Actions */}
