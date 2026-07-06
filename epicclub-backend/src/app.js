@@ -23,6 +23,12 @@ const dashboardRoutes = require('./modules/dashboard/dashboard.routes');
 
 const app = express();
 
+// Trust the first hop proxy (Render's load balancer) so req.ip
+// reflects the real client IP from X-Forwarded-For headers.
+// Without this, all requests share Render's internal proxy IP
+// causing shared rate limit counters between different users.
+app.set('trust proxy', 1);
+
 // 1. Secure HTTP headers using Helmet.js
 app.use(
   helmet({

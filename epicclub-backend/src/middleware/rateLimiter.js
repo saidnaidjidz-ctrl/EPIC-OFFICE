@@ -39,15 +39,25 @@ const createLimiter = (options) => {
 // General rate limiter for typical REST endpoints
 const apiLimiter = createLimiter({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  max: 300,
   message: 'Too many requests. Please try again after 15 minutes.',
 });
 
-// Google login: max 100 requests per 15 minutes
-const googleLoginLimiter = createLimiter({
+// Google login: max 500 requests per 15 minutes per IP
+// High limit needed because all Vercel frontend requests
+// may share the same outbound IP on Render's proxy.
+const googleLoginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: 'Too many login attempts. Please try again after 15 minutes.',
+  max: 500,
+  // Use IP fallback — individual accounts are already protected by Google token validation
+  keyGenerator: (req) => req.ip || 'unknown',
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => env.NODE_ENV === 'development',
+  message: {
+    success: false,
+    message: 'Too many login attempts. Please try again after 15 minutes.',
+  },
 });
 
 // Token refresh: max 20 requests per 15 minutes
