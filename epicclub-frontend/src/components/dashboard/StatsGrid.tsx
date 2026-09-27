@@ -49,32 +49,29 @@ interface StatCardProps {
 
 function StatCard({ title, value, icon, trend, trendType = 'info', badge }: StatCardProps) {
   const trendColorClass = 
-    trendType === 'success' ? 'text-success bg-success/10' :
-    trendType === 'warning' ? 'text-warning bg-warning/10' :
-    'text-accent bg-accent/10';
+    trendType === 'success' ? 'text-[#1E7B6C] bg-[#45CBB4]/15 border border-[#45CBB4]/30' :
+    trendType === 'warning' ? 'text-[#B25622] bg-[#F49A67]/15 border border-[#F49A67]/30' :
+    'text-[#173B47] bg-[#2DC5D9]/15 border border-[#2DC5D9]/30';
 
   return (
     <motion.div 
       variants={cardVariants}
-      whileHover={{ y: -4 }}
-      className="card-glass p-6 flex flex-col gap-4 relative overflow-hidden group"
+      whileHover={{ y: -3 }}
+      className="card p-5 flex flex-col justify-between gap-3 relative overflow-hidden group bg-white border border-[#CFE8ED] rounded-2xl shadow-sm hover:shadow-md transition-all duration-200"
     >
-      {/* Background radial glow */}
-      <div className="absolute inset-0 bg-gradient-radial from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-      
       <div className="flex justify-between items-start">
         <div className="flex flex-col gap-1 z-10">
-          <span className="text-sm font-medium text-text-secondary uppercase tracking-wider">{title}</span>
-          <span className="text-4xl font-extrabold text-text-primary tracking-tight mt-1">{value}</span>
+          <span className="text-xs font-semibold text-[#66858F] font-cairo">{title}</span>
+          <span className="text-3xl font-extrabold text-[#173B47] tracking-tight mt-1 font-jakarta">{value}</span>
         </div>
-        <div className="p-3 rounded-xl bg-surface-2 border border-border text-text-secondary group-hover:text-accent group-hover:border-accent/50 transition-all duration-300 z-10 shadow-inner">
+        <div className="p-3 rounded-xl bg-[#F0F8FA] border border-[#CFE8ED] text-[#2DC5D9] group-hover:bg-[#2DC5D9]/15 group-hover:text-[#173B47] transition-all duration-300 z-10">
           {icon}
         </div>
       </div>
 
-      <div className="flex items-center gap-3 mt-2 z-10">
+      <div className="flex items-center gap-2 mt-1 z-10 text-xs">
         {trend && (
-          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${trendColorClass}`}>
+          <span className={`px-2 py-0.5 rounded-full font-medium font-jakarta ${trendColorClass}`}>
             {trend}
           </span>
         )}
@@ -101,40 +98,40 @@ export default function StatsGrid({ role, data }: StatsGridProps) {
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
       >
         <StatCard 
-          title="Total Members"
+          title="إجمالي الأعضاء"
           value={d.users?.total || 0}
-          icon={<Users className="w-6 h-6" />}
+          icon={<Users className="w-5 h-5" />}
           badge={
             pendingCount > 0 ? (
-              <span className="badge-warning text-xs font-medium animate-pulse-slow">
-                {pendingCount} Pending Approval
+              <span className="badge bg-[#F49A67]/20 text-[#B25622] border border-[#F49A67]/40 text-xs">
+                {pendingCount} بانتظار الاعتماد
               </span>
             ) : (
-              <span className="badge-success text-xs font-medium">All approved</span>
+              <span className="badge bg-[#45CBB4]/20 text-[#1E7B6C] border border-[#45CBB4]/40 text-xs">الكل معتمد</span>
             )
           }
         />
         <StatCard 
-          title="Active Tasks"
+          title="المهام النشطة"
           value={(d.tasks?.pending || 0) + (d.tasks?.in_progress || 0)}
-          icon={<CheckSquare className="w-6 h-6" />}
-          trend={`${d.tasks?.completion_rate || 0}% Completion`}
+          icon={<CheckSquare className="w-5 h-5" />}
+          trend={`${d.tasks?.completion_rate || 0}% إنجاز`}
           trendType={d.tasks?.completion_rate && d.tasks.completion_rate > 70 ? 'success' : 'info'}
         />
         <StatCard 
-          title="Committees"
+          title="إجمالي اللجان"
           value={d.committees?.total || 0}
-          icon={<FolderKanban className="w-6 h-6" />}
-          trend="Global Sync Active"
+          icon={<FolderKanban className="w-5 h-5" />}
+          trend="نشطة بالكامل"
         />
         <StatCard 
-          title="Upcoming Meetings"
+          title="اجتماعات الأسبوع"
           value={d.meetings?.upcoming_count || 0}
-          icon={<CalendarDays className="w-6 h-6" />}
-          trend={`This week: ${d.meetings?.this_week || 0}`}
+          icon={<CalendarDays className="w-5 h-5" />}
+          trend={`${d.meetings?.this_week || 0} هذا الأسبوع`}
         />
       </motion.div>
     );
@@ -147,40 +144,40 @@ export default function StatsGrid({ role, data }: StatsGridProps) {
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
       >
         <StatCard 
-          title="Committee Members"
+          title="أعضاء اللجنة"
           value={d.members?.total || 0}
-          icon={<Users className="w-6 h-6" />}
+          icon={<Users className="w-5 h-5" />}
           badge={
-            <span className="badge-primary text-xs">
-              {d.members?.active || 0} Active
+            <span className="badge bg-[#2DC5D9]/20 text-[#173B47] border border-[#2DC5D9]/40 text-xs">
+              {d.members?.active || 0} عضو نشط
             </span>
           }
         />
         <StatCard 
-          title="Total Tasks"
+          title="إجمالي المهام"
           value={d.tasks?.total || 0}
-          icon={<CheckSquare className="w-6 h-6" />}
+          icon={<CheckSquare className="w-5 h-5" />}
           badge={
-            <span className="badge-accent text-xs">
-              {d.tasks?.in_progress || 0} In Progress
+            <span className="badge bg-[#38C9D8]/20 text-[#173B47] border border-[#38C9D8]/40 text-xs">
+              {d.tasks?.in_progress || 0} قيد التنفيذ
             </span>
           }
         />
         <StatCard 
-          title="Completion Rate"
+          title="نسبة الإنجاز العامة"
           value={`${d.tasks?.completion_rate || 0}%`}
-          icon={<Percent className="w-6 h-6" />}
-          trend={`${d.tasks?.completed || 0} Done`}
+          icon={<Percent className="w-5 h-5" />}
+          trend={`${d.tasks?.completed || 0} مكتملة`}
           trendType="success"
         />
         <StatCard 
-          title="Upcoming Meetings"
+          title="الاجتماعات القادمة"
           value={d.upcoming_meetings?.length || 0}
-          icon={<CalendarDays className="w-6 h-6" />}
-          trend="Next 7 days"
+          icon={<CalendarDays className="w-5 h-5" />}
+          trend="خلال 7 أيام"
         />
       </motion.div>
     );
@@ -200,41 +197,41 @@ export default function StatsGrid({ role, data }: StatsGridProps) {
       variants={containerVariants}
       initial="hidden"
       animate="show"
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
     >
       <StatCard 
-        title="My Tasks Pending"
+        title="مهام قيد الانتظار"
         value={pendingCount}
-        icon={<Clock className="w-6 h-6 animate-pulse-slow" />}
+        icon={<Clock className="w-5 h-5" />}
         badge={
           overdueCount > 0 ? (
-            <span className="badge-error text-xs font-semibold">
-              {overdueCount} Overdue
+            <span className="badge bg-[#F18368]/20 text-[#B83E22] border border-[#F18368]/40 text-xs">
+              {overdueCount} متأخرة
             </span>
           ) : (
-            <span className="badge-ghost text-xs">No overdue items</span>
+            <span className="badge bg-[#45CBB4]/20 text-[#1E7B6C] border border-[#45CBB4]/40 text-xs">في الموعد</span>
           )
         }
       />
       <StatCard 
-        title="Tasks in Progress"
+        title="مهام قيد التنفيذ"
         value={inProgressCount}
-        icon={<CheckSquare className="w-6 h-6" />}
+        icon={<CheckSquare className="w-5 h-5" />}
       />
       <StatCard 
-        title="Completion Rate"
+        title="نسبة إنجازي"
         value={`${myCompletionRate}%`}
-        icon={<TrendingUp className="w-6 h-6" />}
-        trend={`${totalCompleted} Completed`}
+        icon={<TrendingUp className="w-5 h-5" />}
+        trend={`${totalCompleted} مكتملة`}
         trendType="success"
       />
       <StatCard 
-        title="Unread Alerts"
+        title="تنبيهات غير مقروءة"
         value={d.recent_notifications?.filter(n => !n.is_read).length || 0}
-        icon={<Bell className="w-6 h-6" />}
+        icon={<Bell className="w-5 h-5" />}
         badge={
-          <span className="badge-primary text-xs">
-            Recent activity
+          <span className="badge bg-[#2DC5D9]/20 text-[#173B47] border border-[#2DC5D9]/40 text-xs">
+            نشاط جديد
           </span>
         }
       />

@@ -121,30 +121,47 @@ export default function DashboardPage() {
   const leaderData = data as LeaderDashboard;
   const memberData = data as MemberDashboard;
 
+  // Format Arabic current date
+  const todayDate = new Intl.DateTimeFormat('ar-EG', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(new Date());
+
+  const roleTitle = 
+    role === 'president' ? 'رئيس النادي' :
+    role === 'committee_leader' ? 'قائد لجنة' : 'عضو النادي';
+
   return (
-    <div className="flex flex-col gap-8 animate-fade-in">
-      {/* Page Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div className="flex flex-col gap-6 animate-fade-in font-cairo">
+      {/* Page Header with Welcome & Date */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white border border-[#CFE8ED] p-5 rounded-2xl shadow-sm">
         <div className="flex flex-col gap-1">
+          <span className="text-xs font-semibold text-[#2DC5D9]">
+            {todayDate}
+          </span>
           <div className="flex items-center gap-3">
-            <LayoutDashboard className="w-8 h-8 text-accent" />
-            <h1 className="text-3xl font-extrabold text-text-primary tracking-tight">
-              Epic Control Panel
+            <h1 className="text-2xl md:text-3xl font-extrabold text-[#173B47] tracking-tight">
+              أهلاً بك مجدداً، {user.name} 👋
             </h1>
           </div>
-          <p className="text-sm text-text-secondary mt-1">
-            Welcome back, <span className="font-semibold text-gradient-primary">{user.name}</span>. Scoped role: <span className="font-semibold capitalize text-accent">{role.replace('_', ' ')}</span>
+          <p className="text-xs md:text-sm text-[#66858F] mt-0.5">
+            مساحة العمل الرسمية لنادي <span className="font-bold text-[#173B47]">EPIC CLUB</span> — دورك الحالي: <span className="font-bold text-[#2DC5D9]">{roleTitle}</span>
           </p>
         </div>
 
-        {/* Global Dashboard Action (Refresh sync) */}
-        <button 
-          onClick={() => refetch()} 
-          className="btn-ghost text-xs flex items-center gap-2 py-2 px-3 hover:shadow-glow-cyan/20"
-        >
-          <RefreshCw className="w-3.5 h-3.5" />
-          Sync Panel
-        </button>
+        {/* Global Dashboard Actions */}
+        <div className="flex items-center gap-2.5">
+          <button 
+            onClick={() => refetch()} 
+            className="btn bg-[#F0F8FA] border border-[#CFE8ED] text-[#173B47] hover:bg-[#CFE8ED]/30 text-xs flex items-center gap-2 py-2 px-3.5 rounded-xl transition-all"
+            title="تحديث البيانات"
+          >
+            <RefreshCw className="w-3.5 h-3.5 text-[#2DC5D9]" />
+            <span>تحديث البيانات</span>
+          </button>
+        </div>
       </div>
 
       {/* 1. Stats Cards Grid */}

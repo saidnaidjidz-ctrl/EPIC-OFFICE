@@ -1,29 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ─── CSS Custom Properties ──────────────────────────────────────────────────── */
+/* ─── CSS Custom Properties (EPIC-OFFICE-UIUX) ────────────────────────────────── */
 :root {
-  --primary:        #1E3A5F;
-  --secondary:      #7C3AED;
-  --accent:         #06B6D4;
-  --background:     #0F172A;
-  --surface:        #1E293B;
-  --surface-2:      #334155;
-  --surface-3:      #475569;
-  --text-primary:   #F1F5F9;
-  --text-secondary: #94A3B8;
-  --success:        #10B981;
-  --warning:        #F59E0B;
-  --error:          #EF4444;
-  --border:         #334155;
+  --primary:        #2DC5D9;
+  --secondary:      #7F91FF;
+  --accent:         #38C9D8;
+  --background:     #F5FBFD;
+  --surface:        #FFFFFF;
+  --surface-2:      #F0F8FA;
+  --surface-3:      #E4F2F5;
+  --text-primary:   #173B47;
+  --text-secondary: #66858F;
+  --success:        #45CBB4;
+  --warning:        #F49A67;
+  --error:          #F18368;
+  --border:         #CFE8ED;
 
   /* Scrollbar */
-  --scrollbar-track: #1E293B;
-  --scrollbar-thumb: #334155;
-  --scrollbar-thumb-hover: #475569;
+  --scrollbar-track: #F5FBFD;
+  --scrollbar-thumb: #CFE8ED;
+  --scrollbar-thumb-hover: #B8EBF2;
 }
 
 /* ─── Base Reset ─────────────────────────────────────────────────────────────── */
@@ -39,31 +39,39 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    direction: rtl;
   }
 
   body {
     background-color: var(--background);
     color: var(--text-primary);
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Cairo', 'Plus Jakarta Sans', system-ui, sans-serif;
     min-height: 100vh;
     line-height: 1.6;
   }
 
   /* Headings */
   h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cairo', sans-serif;
     font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+  }
+
+  /* Numbers & Latin text utility */
+  .font-num {
+    font-family: 'Plus Jakarta Sans', sans-serif;
   }
 
   /* Links */
   a {
-    color: var(--accent);
+    color: var(--primary);
     text-decoration: none;
     transition: color 0.2s ease;
   }
   a:hover {
-    color: var(--secondary);
+    color: var(--accent);
   }
 
   /* Custom Scrollbar */
@@ -84,7 +92,7 @@
 
   /* Selection */
   ::selection {
-    background: rgba(124, 58, 237, 0.3);
+    background: rgba(45, 197, 217, 0.25);
     color: var(--text-primary);
   }
 
@@ -92,31 +100,30 @@
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
-    border-radius: 4px;
+    border-radius: 6px;
   }
 }
 
 /* ─── Components ─────────────────────────────────────────────────────────────── */
 @layer components {
-  /* Glass Card */
+  /* Glass Card & Surfaces */
   .card {
-    @apply bg-surface border border-border rounded-2xl shadow-card;
-    backdrop-filter: blur(12px);
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    @apply bg-white border border-[#CFE8ED] rounded-2xl shadow-sm;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
   }
   .card:hover {
-    @apply shadow-card-hover;
+    @apply shadow-md;
     transform: translateY(-2px);
   }
   .card-glass {
-    background: rgba(30, 41, 59, 0.7);
-    @apply border border-border rounded-2xl;
-    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.95);
+    @apply border border-[#CFE8ED] rounded-2xl shadow-sm;
+    backdrop-filter: blur(16px);
   }
 
   /* Buttons */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-200 cursor-pointer select-none;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 cursor-pointer select-none font-cairo;
     outline: none;
   }
   .btn:focus-visible {
@@ -127,25 +134,25 @@
   }
 
   .btn-primary {
-    @apply btn bg-gradient-primary text-white shadow-glow;
+    @apply btn bg-[#38C9D8] hover:bg-[#2DC5D9] text-white shadow-sm font-semibold;
   }
   .btn-primary:hover {
-    @apply shadow-glow opacity-90;
     transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(45, 197, 217, 0.35);
   }
 
   .btn-secondary {
-    @apply btn bg-secondary/20 text-secondary border border-secondary/30;
+    @apply btn bg-[#7F91FF]/15 text-[#7F91FF] border border-[#7F91FF]/30;
   }
   .btn-secondary:hover {
-    @apply bg-secondary/30 border-secondary/50;
+    @apply bg-[#7F91FF]/25 border-[#7F91FF]/50;
   }
 
   .btn-accent {
-    @apply btn bg-accent/20 text-accent border border-accent/30;
+    @apply btn bg-[#2DC5D9]/15 text-[#173B47] border border-[#2DC5D9]/30;
   }
   .btn-accent:hover {
-    @apply bg-accent/30 border-accent/60 shadow-glow-cyan;
+    @apply bg-[#2DC5D9]/25 border-[#2DC5D9]/60;
   }
 
   .btn-ghost {
@@ -171,23 +178,23 @@
 
   /* Form Inputs */
   .input {
-    @apply w-full px-4 py-2.5 bg-surface-2 border border-border rounded-xl text-text-primary placeholder-text-secondary text-sm transition-all duration-200;
+    @apply w-full px-4 py-2.5 bg-white border border-[#CFE8ED] rounded-xl text-[#173B47] placeholder-[#66858F] text-sm transition-all duration-200;
     outline: none;
   }
   .input:focus {
-    @apply border-accent bg-surface;
-    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+    @apply border-[#2DC5D9] bg-white;
+    box-shadow: 0 0 0 3px rgba(45, 197, 217, 0.15);
   }
   .input-error {
     @apply border-error;
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    box-shadow: 0 0 0 3px rgba(241, 131, 104, 0.15);
   }
   .input:disabled {
-    @apply opacity-50 cursor-not-allowed;
+    @apply opacity-50 cursor-not-allowed bg-[#F0F8FA];
   }
 
   .label {
-    @apply block text-sm font-medium text-text-secondary mb-1.5;
+    @apply block text-sm font-medium text-[#173B47] mb-1.5;
   }
 
   .form-group {
@@ -200,37 +207,37 @@
 
   /* Badge */
   .badge {
-    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium font-cairo;
   }
-  .badge-primary   { @apply badge bg-primary/30   text-primary-200;   }
-  .badge-secondary { @apply badge bg-secondary/20 text-secondary-300; }
-  .badge-accent    { @apply badge bg-accent/20    text-accent-300;    }
-  .badge-success   { @apply badge bg-success/20   text-success;       }
-  .badge-warning   { @apply badge bg-warning/20   text-warning;       }
-  .badge-error     { @apply badge bg-error/20     text-error;         }
-  .badge-ghost     { @apply badge bg-surface-2    text-text-secondary; }
+  .badge-primary   { @apply badge bg-[#2DC5D9]/15 text-[#173B47] border border-[#2DC5D9]/30; }
+  .badge-secondary { @apply badge bg-[#7F91FF]/15 text-[#7F91FF] border border-[#7F91FF]/30; }
+  .badge-accent    { @apply badge bg-[#38C9D8]/15 text-[#173B47] border border-[#38C9D8]/30; }
+  .badge-success   { @apply badge bg-[#45CBB4]/15 text-[#1E7B6C] border border-[#45CBB4]/30; }
+  .badge-warning   { @apply badge bg-[#F49A67]/15 text-[#B25622] border border-[#F49A67]/30; }
+  .badge-error     { @apply badge bg-[#F18368]/15 text-[#B83E22] border border-[#F18368]/30; }
+  .badge-ghost     { @apply badge bg-[#F0F8FA]   text-[#66858F] border border-[#CFE8ED]; }
 
   /* Priority badges */
-  .priority-low    { @apply badge bg-success/20 text-success;   }
-  .priority-medium { @apply badge bg-warning/20 text-warning;   }
-  .priority-high   { @apply badge bg-orange-500/20 text-orange-400; }
-  .priority-urgent { @apply badge bg-error/20   text-error;     }
+  .priority-low    { @apply badge bg-[#45CBB4]/15 text-[#1E7B6C] border border-[#45CBB4]/30; }
+  .priority-medium { @apply badge bg-[#F49A67]/15 text-[#B25622] border border-[#F49A67]/30; }
+  .priority-high   { @apply badge bg-[#F18368]/15 text-[#B83E22] border border-[#F18368]/30; }
+  .priority-urgent { @apply badge bg-[#F18368]/25 text-[#9E2910] border border-[#F18368]/50 font-bold; }
 
   /* Status badges */
-  .status-pending     { @apply badge bg-warning/20 text-warning;   }
-  .status-in_progress { @apply badge bg-accent/20  text-accent;    }
-  .status-completed   { @apply badge bg-success/20 text-success;   }
-  .status-cancelled   { @apply badge bg-surface-2  text-text-secondary; }
+  .status-pending     { @apply badge bg-[#F49A67]/15 text-[#B25622] border border-[#F49A67]/30; }
+  .status-in_progress { @apply badge bg-[#38C9D8]/15 text-[#173B47] border border-[#38C9D8]/30; }
+  .status-completed   { @apply badge bg-[#45CBB4]/15 text-[#1E7B6C] border border-[#45CBB4]/30; }
+  .status-cancelled   { @apply badge bg-[#F0F8FA]   text-[#66858F] border border-[#CFE8ED]; }
 
   /* Sidebar Nav Item */
   .nav-item {
-    @apply flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-text-secondary transition-all duration-200 cursor-pointer;
+    @apply flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-[#66858F] transition-all duration-200 cursor-pointer;
   }
   .nav-item:hover {
-    @apply bg-surface-2 text-text-primary;
+    @apply bg-[#F0F8FA] text-[#173B47];
   }
   .nav-item.active {
-    @apply bg-gradient-primary text-white shadow-glow;
+    @apply bg-[#2DC5D9] text-white shadow-sm font-semibold;
   }
 
   /* Divider */

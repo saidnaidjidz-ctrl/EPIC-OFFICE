@@ -32,18 +32,20 @@ export default function CommitteePerformance({ role, data }: CommitteePerformanc
     })).sort((a, b) => b.count - a.count);
 
     return (
-      <div className="card-glass p-6 flex flex-col gap-6 h-full min-h-[350px]">
-        <div className="flex justify-between items-start border-b border-border/50 pb-4">
+      <div className="bg-white border border-[#CFE8ED] rounded-2xl shadow-sm p-6 flex flex-col gap-5 h-full min-h-[350px]">
+        <div className="flex justify-between items-start border-b border-[#CFE8ED] pb-4">
           <div className="flex flex-col gap-1">
-            <h3 className="text-lg font-bold text-text-primary">Committee Allocation</h3>
-            <p className="text-xs text-text-secondary">Distribution of approved members across committees</p>
+            <h3 className="text-base md:text-lg font-bold text-[#173B47] font-cairo">توزيع أعضاء اللجان</h3>
+            <p className="text-xs text-[#66858F]">توزيع الأعضاء المعتمدين على مختلف لجان النادي</p>
           </div>
-          <Users className="w-5 h-5 text-text-secondary opacity-60" />
+          <div className="p-2 rounded-xl bg-[#F0F8FA] border border-[#CFE8ED] text-[#2DC5D9]">
+            <Users className="w-5 h-5" />
+          </div>
         </div>
 
         {chartData.length === 0 ? (
-          <div className="flex-1 flex items-center justify-center text-text-secondary text-sm">
-            No committee allocation data
+          <div className="flex-1 flex items-center justify-center text-[#66858F] text-sm font-medium">
+            لا توجد بيانات توزيع للجان حالياً
           </div>
         ) : (
           <div className="flex-1 min-h-[220px]">
@@ -51,27 +53,27 @@ export default function CommitteePerformance({ role, data }: CommitteePerformanc
               <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <XAxis 
                   dataKey="name" 
-                  stroke="#94A3B8" 
+                  stroke="#66858F" 
                   fontSize={11}
                   tickLine={false}
                   axisLine={false}
                 />
                 <YAxis 
-                  stroke="#94A3B8" 
+                  stroke="#66858F" 
                   fontSize={11}
                   tickLine={false}
                   axisLine={false}
                   allowDecimals={false}
                 />
                 <Tooltip
-                  cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
+                  cursor={{ fill: 'rgba(45, 197, 217, 0.08)' }}
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
                       const data = payload[0]?.payload;
                       return (
-                        <div className="bg-surface border border-border px-3 py-2 rounded-lg text-xs shadow-xl">
-                          <p className="font-semibold text-text-primary mb-1">{data.name}</p>
-                          <p className="text-accent">{data.count} Members</p>
+                        <div className="bg-white border border-[#CFE8ED] px-3.5 py-2.5 rounded-xl text-xs shadow-lg font-cairo">
+                          <p className="font-bold text-[#173B47] mb-1">{data.name}</p>
+                          <p className="text-[#2DC5D9] font-bold font-jakarta">{data.count} عضو</p>
                         </div>
                       );
                     }
@@ -82,7 +84,7 @@ export default function CommitteePerformance({ role, data }: CommitteePerformanc
                   {chartData.map((entry, index) => (
                     <Cell 
                       key={`cell-${index}`} 
-                      fill={index === 0 ? '#7C3AED' : '#1E3A5F'} 
+                      fill={index === 0 ? '#2DC5D9' : index === 1 ? '#38C9D8' : '#7F91FF'} 
                       className="transition-all duration-300 hover:opacity-85"
                     />
                   ))}
@@ -93,17 +95,17 @@ export default function CommitteePerformance({ role, data }: CommitteePerformanc
         )}
 
         {/* Quick highlight cards */}
-        <div className="grid grid-cols-2 gap-4 mt-2">
-          <div className="p-3 rounded-xl bg-surface-2/40 border border-border/30">
-            <span className="text-2xs text-text-secondary font-medium uppercase tracking-wider block">Most Active</span>
-            <span className="text-sm font-bold text-text-primary mt-1 block truncate">
-              {d.committees?.most_active || 'N/A'}
+        <div className="grid grid-cols-2 gap-3.5 mt-1">
+          <div className="p-3 rounded-xl bg-[#F0F8FA] border border-[#CFE8ED]">
+            <span className="text-[10px] text-[#66858F] font-semibold uppercase tracking-wider block">الأكثر نشاطاً</span>
+            <span className="text-xs md:text-sm font-bold text-[#173B47] mt-1 block truncate">
+              {d.committees?.most_active || 'غير محدد'}
             </span>
           </div>
-          <div className="p-3 rounded-xl bg-surface-2/40 border border-border/30">
-            <span className="text-2xs text-text-secondary font-medium uppercase tracking-wider block">Least Active</span>
-            <span className="text-sm font-bold text-text-primary mt-1 block truncate">
-              {d.committees?.least_active || 'N/A'}
+          <div className="p-3 rounded-xl bg-[#F0F8FA] border border-[#CFE8ED]">
+            <span className="text-[10px] text-[#66858F] font-semibold uppercase tracking-wider block">الأقل نشاطاً</span>
+            <span className="text-xs md:text-sm font-bold text-[#173B47] mt-1 block truncate">
+              {d.committees?.least_active || 'غير محدد'}
             </span>
           </div>
         </div>
@@ -116,28 +118,30 @@ export default function CommitteePerformance({ role, data }: CommitteePerformanc
   const performance = d.member_performance || [];
 
   return (
-    <div className="card-glass p-6 flex flex-col gap-6 h-full min-h-[350px]">
-      <div className="flex justify-between items-start border-b border-border/50 pb-4">
+    <div className="bg-white border border-[#CFE8ED] rounded-2xl shadow-sm p-6 flex flex-col gap-5 h-full min-h-[350px]">
+      <div className="flex justify-between items-start border-b border-[#CFE8ED] pb-4">
         <div className="flex flex-col gap-1">
-          <h3 className="text-lg font-bold text-text-primary">Member Performance</h3>
-          <p className="text-xs text-text-secondary">Task completion stats for committee members</p>
+          <h3 className="text-base md:text-lg font-bold text-[#173B47] font-cairo">أداء أعضاء اللجنة</h3>
+          <p className="text-xs text-[#66858F]">إحصائيات إنجاز المهام لكل عضو في اللجنة</p>
         </div>
-        <Award className="w-5 h-5 text-text-secondary opacity-60" />
+        <div className="p-2 rounded-xl bg-[#F0F8FA] border border-[#CFE8ED] text-[#2DC5D9]">
+          <Award className="w-5 h-5" />
+        </div>
       </div>
 
       {performance.length === 0 ? (
-        <div className="flex-1 flex items-center justify-center text-text-secondary text-sm">
-          No team members registered yet
+        <div className="flex-1 flex items-center justify-center text-[#66858F] text-sm font-medium">
+          لم يتم تسجيل مهام للأعضاء بعد
         </div>
       ) : (
-        <div className="flex-grow overflow-y-auto max-h-[380px] hide-scrollbar pr-1">
-          <table className="w-full text-left border-collapse">
+        <div className="flex-grow overflow-y-auto max-h-[380px] hide-scrollbar pl-1">
+          <table className="w-full text-right border-collapse">
             <thead>
-              <tr className="border-b border-border/40 text-2xs font-semibold text-text-secondary uppercase tracking-wider">
-                <th className="py-2 pb-3">Name</th>
-                <th className="py-2 pb-3 text-center">Completed</th>
-                <th className="py-2 pb-3 text-center">Total</th>
-                <th className="py-2 pb-3 text-right">Rate</th>
+              <tr className="border-b border-[#CFE8ED] text-[11px] font-bold text-[#66858F] uppercase tracking-wider">
+                <th className="py-2.5 pb-3">العضو</th>
+                <th className="py-2.5 pb-3 text-center">المكتملة</th>
+                <th className="py-2.5 pb-3 text-center">الإجمالي</th>
+                <th className="py-2.5 pb-3 text-left">نسبة الإنجاز</th>
               </tr>
             </thead>
             <tbody>
@@ -149,27 +153,27 @@ export default function CommitteePerformance({ role, data }: CommitteePerformanc
                 return (
                   <tr 
                     key={member.user_id} 
-                    className="border-b border-border/20 text-xs hover:bg-surface-2/30 transition-colors duration-150"
+                    className="border-b border-[#CFE8ED]/60 text-xs hover:bg-[#F0F8FA] transition-colors duration-150"
                   >
-                    <td className="py-3 pr-2 font-medium text-text-primary flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-surface-2 border border-border flex items-center justify-center text-2xs font-bold text-text-secondary">
+                    <td className="py-3 pl-2 font-semibold text-[#173B47] flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-[#F0F8FA] border border-[#CFE8ED] flex items-center justify-center text-[10px] font-bold text-[#66858F] font-jakarta">
                         {index + 1}
                       </span>
-                      <span className="truncate max-w-[120px]">{member.name}</span>
+                      <span className="truncate max-w-[140px]">{member.name}</span>
                     </td>
                     <td className="py-3 text-center">
-                      <span className="inline-flex items-center gap-1 font-semibold text-success">
-                        <CheckCircle className="w-3 h-3" />
+                      <span className="inline-flex items-center gap-1 font-bold text-[#1E7B6C] font-jakarta">
+                        <CheckCircle className="w-3.5 h-3.5 text-[#45CBB4]" />
                         {completed}
                       </span>
                     </td>
-                    <td className="py-3 text-center text-text-secondary">
-                      <span className="inline-flex items-center gap-1 font-semibold">
-                        <Target className="w-3 h-3 opacity-60" />
+                    <td className="py-3 text-center text-[#66858F]">
+                      <span className="inline-flex items-center gap-1 font-semibold font-jakarta">
+                        <Target className="w-3.5 h-3.5 opacity-60" />
                         {total}
                       </span>
                     </td>
-                    <td className="py-3 text-right font-bold text-accent">
+                    <td className="py-3 text-left font-bold text-[#2DC5D9] font-jakarta">
                       {rate}%
                     </td>
                   </tr>

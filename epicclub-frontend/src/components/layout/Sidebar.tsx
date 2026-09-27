@@ -75,60 +75,47 @@ export default function Sidebar() {
   const navItems = React.useMemo(() => {
     const items = [
       {
-        label: 'Dashboard',
+        label: 'نظرة عامة',
         href: '/dashboard',
         icon: <Home className="w-5 h-5" />,
       },
-    ];
-
-    // Tasks item: "All Tasks" for President, "My Tasks" for others
-    if (role === 'president') {
-      items.push({
-        label: 'All Tasks',
-        href: '/dashboard/tasks',
-        icon: <ClipboardList className="w-5 h-5" />,
-      });
-    } else {
-      items.push({
-        label: 'My Tasks',
-        href: '/dashboard/tasks',
-        icon: <CheckSquare className="w-5 h-5" />,
-      });
-    }
-
-    items.push(
       {
-        label: 'Meetings',
+        label: role === 'president' ? 'كل المهام' : 'مهامي',
+        href: '/dashboard/tasks',
+        icon: role === 'president' ? <ClipboardList className="w-5 h-5" /> : <CheckSquare className="w-5 h-5" />,
+      },
+      {
+        label: 'الاجتماعات',
         href: '/dashboard/meetings',
         icon: <CalendarDays className="w-5 h-5" />,
       },
       {
-        label: 'Notifications',
+        label: 'التنبيهات',
         href: '/dashboard/notifications',
         icon: <Bell className="w-5 h-5" />,
-      }
-    );
+      },
+    ];
 
     // Leader and President only items
     if (role === 'president' || role === 'committee_leader') {
       items.push(
         {
-          label: 'Committees',
+          label: 'اللجان',
           href: '/dashboard/committees',
           icon: <FolderKanban className="w-5 h-5" />,
         },
         {
-          label: 'Analytics',
+          label: 'التحليلات',
           href: '/dashboard/analytics',
           icon: <BarChart3 className="w-5 h-5" />,
         }
       );
     }
 
-    // President-only admin panel
+    // President-only admin panel (Members & Roles)
     if (role === 'president') {
       items.push({
-        label: 'Admin Panel',
+        label: 'إدارة الأعضاء',
         href: '/dashboard/users',
         icon: <Crown className="w-5 h-5" />,
       });
@@ -149,22 +136,27 @@ export default function Sidebar() {
 
   return (
     <motion.aside
-      animate={{ width: collapsed ? 72 : 260 }}
+      animate={{ width: collapsed ? 76 : 260 }}
       transition={{ duration: 0.25, ease: 'easeInOut' }}
-      className="hidden md:flex flex-col h-screen sticky top-0 bg-[#1E293B] border-r border-white/5 overflow-hidden z-30 flex-shrink-0"
+      className="hidden md:flex flex-col h-screen sticky top-0 bg-white border-l border-[#CFE8ED] overflow-hidden z-30 flex-shrink-0 shadow-sm"
     >
       {/* Brand logo header */}
-      <div className={`relative flex items-center gap-3 px-4 py-5 border-b border-white/5 h-16 flex-shrink-0 ${
+      <div className={`relative flex items-center gap-3 px-4 py-5 border-b border-[#CFE8ED] h-16 flex-shrink-0 ${
         collapsed ? 'justify-center' : 'justify-between'
       }`}>
-        <Link href="/dashboard" className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-secondary to-accent flex items-center justify-center flex-shrink-0 shadow-glow shadow-secondary/20">
-            <span className="text-white font-extrabold text-sm">EC</span>
+        <Link href="/dashboard" className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#2DC5D9] to-[#38C9D8] flex items-center justify-center flex-shrink-0 shadow-sm">
+            <span className="text-white font-extrabold text-sm tracking-tighter">EP</span>
           </div>
           {!collapsed && (
-            <span className="text-sm font-black tracking-wider text-text-primary uppercase bg-clip-text bg-gradient-to-r from-text-primary to-text-primary/80">
-              Epic Club
-            </span>
+            <div className="flex flex-col">
+              <span className="text-sm font-black tracking-wider text-[#173B47]">
+                EPIC CLUB
+              </span>
+              <span className="text-[10px] font-semibold text-[#2DC5D9] -mt-1 tracking-widest uppercase">
+                OFFICE
+              </span>
+            </div>
           )}
         </Link>
 
@@ -172,48 +164,43 @@ export default function Sidebar() {
         {!collapsed && (
           <button
             onClick={handleCollapseToggle}
-            className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors"
-            title="Collapse sidebar"
+            className="p-1.5 rounded-lg text-[#66858F] hover:text-[#173B47] hover:bg-[#F0F8FA] transition-colors"
+            title="طي القائمة"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronRight className="w-4 h-4" />
           </button>
         )}
       </div>
 
       {/* Expand toggle overlay button when collapsed */}
       {collapsed && (
-        <div className="flex justify-center py-2.5 border-b border-white/5">
+        <div className="flex justify-center py-2.5 border-b border-[#CFE8ED]">
           <button
             onClick={handleCollapseToggle}
-            className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors"
-            title="Expand sidebar"
+            className="p-1.5 rounded-lg text-[#66858F] hover:text-[#173B47] hover:bg-[#F0F8FA] transition-colors"
+            title="توسيع القائمة"
           >
-            <ChevronRight className="w-4 h-4" />
+            <ChevronLeft className="w-4 h-4" />
           </button>
         </div>
       )}
 
       {/* Nav List */}
-      <nav className="flex-1 py-4 px-3 flex flex-col gap-1 overflow-y-auto hide-scrollbar">
+      <nav className="flex-1 py-4 px-3 flex flex-col gap-1.5 overflow-y-auto hide-scrollbar">
         {navItems.map((item) => {
           const active = isActive(item.href);
           return (
             <Link
               key={item.label}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 group border-l-2 relative overflow-hidden ${
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 group relative overflow-hidden ${
                 active
-                  ? 'bg-secondary/10 text-secondary border-secondary shadow-inner'
-                  : 'border-transparent text-text-secondary hover:text-text-primary hover:bg-white/[0.03]'
-              } ${collapsed ? 'justify-center px-0 border-l-0' : ''}`}
+                  ? 'bg-[#2DC5D9]/15 text-[#173B47] font-bold border-r-4 border-[#2DC5D9]'
+                  : 'text-[#66858F] hover:text-[#173B47] hover:bg-[#F0F8FA]'
+              } ${collapsed ? 'justify-center px-0' : ''}`}
               title={collapsed ? item.label : undefined}
             >
-              {/* Collapse left accent indicator line */}
-              {collapsed && active && (
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-secondary rounded-r-md" />
-              )}
-              
-              <span className={`flex-shrink-0 ${active ? 'text-secondary' : 'text-text-secondary group-hover:text-text-primary transition-colors'}`}>
+              <span className={`flex-shrink-0 ${active ? 'text-[#2DC5D9]' : 'text-[#66858F] group-hover:text-[#173B47] transition-colors'}`}>
                 {item.icon}
               </span>
               
@@ -224,12 +211,12 @@ export default function Sidebar() {
       </nav>
 
       {/* Bottom Profile Footer block */}
-      <div className="border-t border-white/5 px-3 py-4 flex flex-col gap-3 flex-shrink-0 bg-black/10">
+      <div className="border-t border-[#CFE8ED] px-3 py-4 flex flex-col gap-3 flex-shrink-0 bg-[#F5FBFD]">
         {/* User Card */}
-        <div className={`flex items-center gap-3 px-2.5 py-2 rounded-xl bg-white/[0.02] border border-white/5 overflow-hidden ${
-          collapsed ? 'justify-center px-0 bg-transparent border-transparent' : ''
+        <div className={`flex items-center gap-3 px-2.5 py-2 rounded-xl bg-white border border-[#CFE8ED] shadow-2xs overflow-hidden ${
+          collapsed ? 'justify-center px-0 bg-transparent border-transparent shadow-none' : ''
         }`}>
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xs font-bold text-white flex-shrink-0 border border-white/10">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#2DC5D9] to-[#7F91FF] flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
             {user?.avatar_url ? (
               <Image
                 src={user.avatar_url}
@@ -244,10 +231,10 @@ export default function Sidebar() {
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold text-text-primary truncate">{user?.name || 'Guest'}</p>
-              <span className="text-[10px] text-text-secondary capitalize truncate flex items-center gap-1.5 mt-0.5">
-                {role === 'president' && <Shield className="w-2.5 h-2.5 text-warning" />}
-                {role.replace('_', ' ')}
+              <p className="text-xs font-bold text-[#173B47] truncate">{user?.name || 'مستخدم'}</p>
+              <span className="text-[10px] text-[#66858F] truncate flex items-center gap-1 mt-0.5 font-medium">
+                {role === 'president' && <Shield className="w-3 h-3 text-[#F49A67]" />}
+                {role === 'president' ? 'رئيس النادي' : role === 'committee_leader' ? 'قائد لجنة' : 'عضو'}
               </span>
             </div>
           )}
@@ -258,25 +245,25 @@ export default function Sidebar() {
           {role === 'president' && (
             <Link
               href="/dashboard/settings"
-              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all ${
+              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-[#66858F] hover:text-[#173B47] hover:bg-white transition-all ${
                 collapsed ? 'justify-center px-0' : ''
               }`}
-              title={collapsed ? 'Settings' : undefined}
+              title={collapsed ? 'الإعدادات' : undefined}
             >
               <Settings className="w-4 h-4 flex-shrink-0" />
-              {!collapsed && <span>Settings</span>}
+              {!collapsed && <span>الإعدادات</span>}
             </Link>
           )}
 
           <button
             onClick={handleLogout}
-            className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-error/80 hover:text-error hover:bg-error/10 transition-all ${
+            className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-[#F18368] hover:bg-[#F18368]/10 transition-all ${
               collapsed ? 'justify-center px-0' : ''
             }`}
-            title={collapsed ? 'Logout' : undefined}
+            title={collapsed ? 'تسجيل الخروج' : undefined}
           >
             <LogOut className="w-4 h-4 flex-shrink-0" />
-            {!collapsed && <span>Logout</span>}
+            {!collapsed && <span>تسجيل الخروج</span>}
           </button>
         </div>
       </div>

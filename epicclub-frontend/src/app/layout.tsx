@@ -6,14 +6,14 @@ import { Providers } from './providers';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Epic Club Management System',
-    template: '%s | Epic Club',
+    default: 'EPIC OFFICE — نظام إدارة نادي EPIC Club',
+    template: '%s | EPIC OFFICE',
   },
   description:
-    'A modern, secure management platform for Epic Club — tasks, committees, meetings, and analytics all in one place.',
-  keywords: ['club management', 'task management', 'committees', 'meetings', 'Epic Club'],
-  authors: [{ name: 'Epic Club' }],
-  robots: 'noindex, nofollow', // internal app — prevent indexing
+    'نظام تشغيل وإدارة نادي EPIC Club — إدارة الأعضاء، اللجان، المهام، والاجتماعات في مساحة واحدة متكاملة.',
+  keywords: ['EPIC Club', 'إدارة النادي', 'لوحة التحكم', 'المهام', 'الاجتماعات'],
+  authors: [{ name: 'EPIC Club' }],
+  robots: 'noindex, nofollow',
   icons: {
     icon: '/favicon.ico',
   },
@@ -27,17 +27,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="ar" dir="rtl" className="light" suppressHydrationWarning>
       <head>
-        {/* Preconnect to Google Fonts for faster load */}
+        {/* Preconnect to Google Fonts for Cairo & Plus Jakarta Sans */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className="bg-background text-text-primary antialiased min-h-screen">
+      <body className="bg-background text-text-primary font-cairo antialiased min-h-screen">
         <Providers>{children}</Providers>
       </body>
     </html>

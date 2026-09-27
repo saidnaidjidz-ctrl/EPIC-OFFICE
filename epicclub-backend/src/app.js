@@ -118,8 +118,10 @@ app.get('/health', async (req, res) => {
     redisStatus = `error: ${err.message}`;
   }
 
-  const overallStatus = dbStatus === 'connected' ? 'healthy' : 'unhealthy';
-  const statusCode = overallStatus === 'healthy' ? 200 : 503;
+  // In development, always return 200 so the frontend doesn't get stuck
+  // showing the "waking server" spinner when DB/Redis aren't available locally
+  const overallStatus = dbStatus === 'connected' ? 'healthy' : 'degraded';
+  const statusCode = (overallStatus === 'healthy' || env.NODE_ENV === 'development') ? 200 : 503;
 
   return res.status(statusCode).json({
     status: overallStatus,

@@ -18,7 +18,7 @@ const meetingSchema = z.object({
   location: z.string().optional(),
   meeting_link: z.string().url('Must be a valid URL').optional().or(z.literal('')),
   committee_id: z.string().optional(),
-  attendees: z.array(z.string()).optional().default([]),
+  attendees: z.array(z.string()),
 });
 
 type MeetingFormData = z.infer<typeof meetingSchema>;

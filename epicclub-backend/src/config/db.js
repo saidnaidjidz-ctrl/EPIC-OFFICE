@@ -4,7 +4,8 @@ const env = require('./env');
 const poolConfig = env.DATABASE_URL
   ? {
       connectionString: env.DATABASE_URL,
-      ssl: env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+      // Supabase Transaction Pooler (port 6543) requires SSL in all environments
+      ssl: { rejectUnauthorized: false },
     }
   : {
       host: env.DB_HOST,

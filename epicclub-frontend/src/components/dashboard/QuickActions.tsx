@@ -10,7 +10,7 @@ import {
   BellRing, 
   FolderKanban,
   Activity,
-  ArrowRight
+  ArrowLeft
 } from 'lucide-react';
 import type { UserRole } from '@/types';
 
@@ -24,22 +24,19 @@ interface QuickActionTileProps {
 
 function QuickActionTile({ title, description, icon, href, colorClass }: QuickActionTileProps) {
   return (
-    <Link href={href} className="group relative block rounded-2xl border border-border/40 bg-surface-2/30 p-4 transition-all duration-300 hover:border-border/80 hover:bg-surface-2/60">
-      {/* Background colored hover glow */}
-      <div className="absolute inset-0 -z-10 rounded-2xl opacity-0 bg-gradient-to-br from-transparent to-surface-2 group-hover:opacity-100 transition-opacity duration-300" />
-      
-      <div className="flex gap-4 items-start">
-        <div className={`p-3 rounded-xl ${colorClass} text-white shadow-inner flex-shrink-0 transition-transform duration-300 group-hover:scale-105`}>
+    <Link href={href} className="group relative block rounded-2xl border border-[#CFE8ED] bg-[#F0F8FA] p-4 transition-all duration-200 hover:border-[#2DC5D9] hover:bg-[#F5FBFD] shadow-2xs">
+      <div className="flex gap-3.5 items-start">
+        <div className={`p-3 rounded-xl ${colorClass} shadow-sm flex-shrink-0 transition-transform duration-200 group-hover:scale-105`}>
           {icon}
         </div>
         <div className="flex flex-col flex-grow min-w-0">
           <div className="flex items-center gap-1.5 justify-between">
-            <span className="text-sm font-bold text-text-primary group-hover:text-accent transition-colors duration-200">
+            <span className="text-sm font-bold text-[#173B47] group-hover:text-[#2DC5D9] transition-colors duration-200 font-cairo">
               {title}
             </span>
-            <ArrowRight className="w-3.5 h-3.5 text-text-secondary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
+            <ArrowLeft className="w-3.5 h-3.5 text-[#66858F] opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
           </div>
-          <span className="text-2xs text-text-secondary mt-1 font-medium leading-relaxed">
+          <span className="text-[11px] text-[#66858F] mt-1 font-medium leading-relaxed font-cairo">
             {description}
           </span>
         </div>
@@ -56,73 +53,73 @@ export default function QuickActions({ role }: QuickActionsProps) {
   const isLeader = role === 'president' || role === 'committee_leader';
 
   return (
-    <div className="card-glass p-6 flex flex-col gap-6 h-full">
-      <div className="flex flex-col gap-1 border-b border-border/50 pb-4">
-        <h3 className="text-lg font-bold text-text-primary">Quick Control Panel</h3>
-        <p className="text-xs text-text-secondary">Direct links to primary operations</p>
+    <div className="bg-white border border-[#CFE8ED] rounded-2xl shadow-sm p-6 flex flex-col gap-5 h-full">
+      <div className="flex flex-col gap-1 border-b border-[#CFE8ED] pb-4">
+        <h3 className="text-base md:text-lg font-bold text-[#173B47] font-cairo">إجراءات سريعة</h3>
+        <p className="text-xs text-[#66858F]">روابط مباشرة لأبرز العمليات اليومية</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-3.5">
         {isLeader ? (
           <>
             <QuickActionTile 
-              title="Create Task" 
-              description="Assign new work item to committee member" 
-              icon={<PlusCircle className="w-5 h-5" />} 
-              href="/dashboard/tasks/new" 
-              colorClass="bg-gradient-primary"
+              title="إضافة مهمة جديدة" 
+              description="تكليف عضو في اللجنة بمهمة محددة" 
+              icon={<PlusCircle className="w-5 h-5 text-white" />} 
+              href="/dashboard/tasks" 
+              colorClass="bg-[#2DC5D9]"
             />
             <QuickActionTile 
-              title="Schedule Meeting" 
-              description="Organize a new virtual or in-person sync" 
-              icon={<CalendarPlus className="w-5 h-5" />} 
-              href="/dashboard/meetings/new" 
-              colorClass="bg-gradient-accent"
+              title="جدولة اجتماع" 
+              description="تنظيم لقاء حضوري أو افتراضي" 
+              icon={<CalendarPlus className="w-5 h-5 text-white" />} 
+              href="/dashboard/meetings" 
+              colorClass="bg-[#38C9D8]"
             />
             <QuickActionTile 
-              title="Committees Hub" 
-              description="Monitor activities and manage memberships" 
-              icon={<FolderKanban className="w-5 h-5" />} 
+              title="مركز اللجان" 
+              description="متابعة أداء الفرق وهيكلة الأعضاء" 
+              icon={<FolderKanban className="w-5 h-5 text-[#173B47]" />} 
               href="/dashboard/committees" 
-              colorClass="bg-surface-2 border border-border/80 text-text-primary"
+              colorClass="bg-[#CFE8ED]"
             />
             <QuickActionTile 
-              title="Audit Logs" 
-              description="Browse club records and admin actions" 
-              icon={<Activity className="w-5 h-5" />} 
+              title="سجل التدقيق" 
+              description="استعراض العمليات وإجراءات النظام" 
+              icon={<Activity className="w-5 h-5 text-[#7F91FF]" />} 
               href="/dashboard/audit" 
-              colorClass="bg-surface-2 border border-border/80 text-text-primary"
+              colorClass="bg-[#7F91FF]/15 border border-[#7F91FF]/30"
             />
           </>
         ) : (
           <>
             <QuickActionTile 
-              title="My Task Sheet" 
-              description="Track, update status, and view due dates" 
-              icon={<CheckSquare className="w-5 h-5" />} 
+              title="لوحة مهامي" 
+              description="متابعة وتحديث حالات المهام المسندة" 
+              icon={<CheckSquare className="w-5 h-5 text-white" />} 
               href="/dashboard/tasks" 
-              colorClass="bg-gradient-primary"
+              colorClass="bg-[#2DC5D9]"
             />
             <QuickActionTile 
-              title="Upcoming Syncs" 
-              description="Join conferences and review schedules" 
-              icon={<CalendarPlus className="w-5 h-5" />} 
+              title="جدول الاجتماعات" 
+              description="الاطلاع على المواعيد وتأكيد الحضور" 
+              icon={<CalendarPlus className="w-5 h-5 text-white" />} 
               href="/dashboard/meetings" 
-              colorClass="bg-gradient-accent"
+              colorClass="bg-[#38C9D8]"
             />
             <QuickActionTile 
-              title="Committees" 
-              description="Browse teams and contact leaders" 
-              icon={<Users className="w-5 h-5" />} 
+              title="لجان النادي" 
+              description="استعراض اللجان والتواصل مع الفرق" 
+              icon={<Users className="w-5 h-5 text-[#173B47]" />} 
               href="/dashboard/committees" 
-              colorClass="bg-surface-2 border border-border/80 text-text-primary"
+              colorClass="bg-[#CFE8ED]"
             />
             <QuickActionTile 
-              title="Alerts Center" 
-              description="Review all system notifications" 
-              icon={<BellRing className="w-5 h-5" />} 
+              title="مركز التنبيهات" 
+              description="استعراض كافة الإشعارات والتحديثات" 
+              icon={<BellRing className="w-5 h-5 text-[#7F91FF]" />} 
               href="/dashboard/notifications" 
-              colorClass="bg-surface-2 border border-border/80 text-text-primary"
+              colorClass="bg-[#7F91FF]/15 border border-[#7F91FF]/30"
             />
           </>
         )}

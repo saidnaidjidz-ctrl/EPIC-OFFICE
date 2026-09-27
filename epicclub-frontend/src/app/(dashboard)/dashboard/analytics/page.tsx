@@ -235,10 +235,10 @@ export default function AnalyticsPage() {
     tasks.forEach((t) => {
       if (t.status === 'completed' && t.completed_at) {
         const d = new Date(t.completed_at);
-        if (d >= monday) {
           const idx = d.getDay() === 0 ? 6 : d.getDay() - 1;
-          if (idx >= 0 && idx < 7) counts[idx]++;
-        }
+          if (idx >= 0 && idx < 7) {
+            counts[idx] = (counts[idx] ?? 0) + 1;
+          }
       }
     });
 
@@ -414,7 +414,7 @@ export default function AnalyticsPage() {
           {/* Summary row */}
           <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/5 text-xs text-text-secondary">
             <span>Total this week: <strong className="text-text-primary">{trend.reduce((s, d) => s + d.count, 0)}</strong></span>
-            <span>Peak day: <strong className="text-text-primary">{trend.reduce((best, d) => d.count > best.count ? d : best, trend[0]).day}</strong></span>
+            <span>Peak day: <strong className="text-text-primary">{trend.length > 0 && trend[0] ? trend.reduce((best, d) => d.count > (best?.count ?? 0) ? d : best, trend[0])?.day : '-'}</strong></span>
           </div>
         </motion.div>
       </div>
